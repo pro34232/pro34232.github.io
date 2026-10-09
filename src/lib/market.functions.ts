@@ -13,7 +13,8 @@ async function quote(symbol: string): Promise<Quote> {
   });
   if (!r.ok) throw new Error(`quote ${symbol} ${r.status}`);
   const j = (await r.json()) as { chart: { result: { meta: { regularMarketPrice: number; chartPreviousClose: number; regularMarketTime: number } }[] } };
-  const m = j.chart.result[0].meta;
+  const m = j.chart.result[0]?.meta;
+  if (!m) throw new Error(`no quote ${symbol}`);
   return { price: m.regularMarketPrice, prev: m.chartPreviousClose, time: m.regularMarketTime * 1000 };
 }
 
