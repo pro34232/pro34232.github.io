@@ -25,7 +25,7 @@ export function Enquiry() {
   const submit = (e: React.FormEvent) => {
     e.preventDefault();
     const r = schema.safeParse(f);
-    if (!r.success) return setErr(r.error.issues[0].message);
+    if (!r.success) return setErr(r.error.issues[0]?.message ?? "Invalid input");
     setErr("");
     const d = r.data;
     const body = `Type: ${d.type}\nName: ${d.name}\nEmail: ${d.email}\nPhone: ${d.phone}\nProduct: ${d.product}\nQuantity: ${d.quantity}\n${d.type === "Booking" ? `Preferred date: ${d.date}\n` : ""}\n${d.message}`;
