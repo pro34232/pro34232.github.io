@@ -2,7 +2,9 @@ import { useState } from "react";
 import { z } from "zod";
 import { PRODUCTS } from "@/lib/prices";
 
-export const CONTACT_EMAIL = "info@ecofuel.ae";
+// Address shown to visitors. Enquiries are delivered to MAILBOX.
+export const CONTACT_EMAIL = "info@ecofuel.com";
+const MAILBOX = "abeljomy2012@gmail.com";
 
 const schema = z.object({
   type: z.enum(["Enquiry", "Booking"]),
