@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useServerFn } from "@tanstack/react-start";
 import { PRODUCTS } from "@/lib/prices";
-import { SLOTS, getBookedSlots, submitRequest } from "@/lib/requests.functions";
+import { getBookedSlots, getBookingSettings, submitRequest, type BookingSettings } from "@/lib/requests.functions";
 
 export const CONTACT_EMAIL = "info@ecofuel.com";
 const MAILBOX = "abeljomy2012@gmail.com";
@@ -20,7 +20,14 @@ const schema = z.object({
 });
 
 const input = "mt-2 w-full rounded-md border bg-background p-2";
-const tomorrow = () => new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+const DAY = 86400000;
+const iso = (t: number) => new Date(t).toISOString().slice(0, 10);
+const dow = (d: string) => new Date(d + "T00:00:00Z").getUTCDay();
+const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+const firstOpen = (days: number[]) => {
+  for (let i = 1; i <= 14; i++) { const d = iso(Date.now() + i * DAY); if (days.includes(dow(d))) return d; }
+  return iso(Date.now() + DAY);
+};
 type Status = { s: "idle" } | { s: "sending" } | { s: "ok"; ref: string; type: string } | { s: "fail"; msg: string };
 
 export function Enquiry() {
@@ -29,6 +36,11 @@ export function Enquiry() {
   const [status, setStatus] = useState<Status>({ s: "idle" });
   const [booked, setBooked] = useState<string[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
+  const [cfg, setCfg] = useState<BookingSettings | null>(null);
+  const loadCfg = useServerFn(getBookingSettings);
+  useEffect(() => { loadCfg().then(setCfg).catch(() => setCfg(null)); }, []);
+  const tomorrow = () => firstOpen(cfg?.days ?? [0, 1, 2, 3, 4, 5, 6]);
+  const closed = !!(cfg && f.date && !cfg.days.includes(dow(f.date)));
   const fetchSlots = useServerFn(getBookedSlots);
   const send = useServerFn(submitRequest);
   const set = (k: string) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value });
@@ -45,6 +57,7 @@ export function Enquiry() {
     const r = schema.safeParse(f);
     if (!r.success) return setErr(r.error.issues[0]?.message ?? "Invalid input");
     if (f.type === "Booking" && !f.date) return setErr("Please choose a date");
+    if (closed) return setErr("We're closed that day — please choose another date");
     if (visit && !f.slot) return setErr("Please choose a time slot");
     setErr("");
     setStatus({ s: "sending" });
@@ -101,18 +114,19 @@ export function Enquiry() {
           </select>
         </label>
         {f.product !== "Plant visit" && <label className="text-sm">Quantity<input className={input} value={f.quantity} onChange={set("quantity")} maxLength={30} /></label>}
-        {f.type === "Booking" && <label className="text-sm">{f.product === "Plant visit" ? "Visit date" : "Delivery / collection date"}<input type="date" min={tomorrow()} className={input} value={f.date} onChange={(e) => setF({ ...f, date: e.target.value, slot: "" })} /></label>}
+        {f.type === "Booking" && <label className="text-sm">{f.product === "Plant visit" ? "Visit date" : "Delivery / collection date"}<input type="date" min={iso(Date.now() + DAY)} className={input} value={f.date} onChange={(e) => setF({ ...f, date: e.target.value, slot: "" })} /></label>}
         {visit && (
           <div className="text-sm md:col-span-2">
             Time slot
-            {!f.date ? <p className="mt-2 text-muted-foreground">Choose a date to see available times.</p> : (
+            {cfg && <span className="ml-2 text-xs text-muted-foreground">Open {cfg.days.map((d) => DAY_NAMES[d]).join(", ")}</span>}
+            {!f.date ? <p className="mt-2 text-muted-foreground">Choose a date to see available times.</p> : closed ? <p className="mt-2 text-destructive">Closed on {DAY_NAMES[dow(f.date)]}s — please pick another date.</p> : !cfg ? <p className="mt-2 text-muted-foreground">Loading times…</p> : (
               <div className="mt-2 flex flex-wrap gap-2">
-                {SLOTS.map((s) => {
+                {cfg.slots.map((s) => {
                   const taken = booked.includes(s);
                   return (
                     <button type="button" key={s} disabled={taken || slotsLoading} onClick={() => setF({ ...f, slot: s })}
                       className={`rounded-md border px-4 py-2 ${f.slot === s ? "bg-primary text-primary-foreground" : ""} ${taken ? "cursor-not-allowed line-through opacity-40" : ""}`}>
-                      {s}{taken ? " · booked" : ""}
+                      {s}{taken ? " · full" : ""}
                     </button>
                   );
                 })}
