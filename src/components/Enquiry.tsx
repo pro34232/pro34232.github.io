@@ -31,13 +31,13 @@ export function Enquiry() {
     setErr("");
     const d = r.data;
     const body = `Type: ${d.type}\nName: ${d.name}\nEmail: ${d.email}\nPhone: ${d.phone}\nProduct: ${d.product}\nQuantity: ${d.quantity}\n${d.type === "Booking" ? `Preferred date: ${d.date}\n` : ""}\n${d.message}`;
-    window.location.href = `mailto:${CONTACT_EMAIL}?subject=${encodeURIComponent(`${d.type} – ${d.product} – ${d.name}`)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:${MAILBOX}?subject=${encodeURIComponent(`${d.type} – ${d.product} – ${d.name}`)}&body=${encodeURIComponent(body)}`;
   };
 
   return (
     <section id="enquiry" className="mx-auto max-w-6xl px-6 py-12 pb-24">
       <h2 className="font-display text-3xl">Enquiry & booking</h2>
-      <p className="mt-2 text-muted-foreground">Ask a question, request a quote, or book a fuel order or plant visit. Or email <a className="text-primary" href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>.</p>
+      <p className="mt-2 text-muted-foreground">Ask a question, request a quote, or book a fuel order or plant visit. Or email <a className="text-primary" href={`mailto:${MAILBOX}`}>{CONTACT_EMAIL}</a>.</p>
       <form onSubmit={submit} className="mt-6 grid gap-4 rounded-xl border bg-card p-6 md:grid-cols-2">
         <div className="flex gap-2 md:col-span-2">
           {["Enquiry", "Booking"].map((t) => (
