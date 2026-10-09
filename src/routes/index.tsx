@@ -1,5 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { Enquiry } from "@/components/Enquiry";
 import { PRODUCTS, marketPrice } from "@/lib/prices";
 
 export const Route = createFileRoute("/")({
@@ -44,7 +45,7 @@ function Index() {
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <span className="font-display text-2xl">Eco<span className="text-primary">Fuel</span></span>
         <nav className="flex gap-6 text-sm text-muted-foreground">
-          <a href="#prices">Prices</a><a href="#cost">Cost</a><a href="#quality">Quality</a><a href="#plant">Plant</a>
+          <a href="#prices">Prices</a><a href="#cost">Cost</a><a href="#quality">Quality</a><a href="#plant">Plant</a><a href="#enquiry">Book</a>
         </nav>
       </header>
 
@@ -101,7 +102,7 @@ function Index() {
         </div>
       </section>
 
-      <section id="plant" className="mx-auto max-w-6xl px-6 py-12 pb-24">
+      <section id="plant" className="mx-auto max-w-6xl px-6 py-12">
         <h2 className="font-display text-3xl">Plant specifications</h2>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {SPECS.map(([k, v]) => (
@@ -109,6 +110,7 @@ function Index() {
           ))}
         </div>
       </section>
+      <Enquiry />
       <footer className="border-t py-8 text-center text-sm text-muted-foreground">© Eco Fuel · Prices are indicative MSRP in UAE Dirhams</footer>
     </main>
   );
