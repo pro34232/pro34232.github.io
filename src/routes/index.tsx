@@ -1,24 +1,115 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { PRODUCTS, marketPrice } from "@/lib/prices";
 
-// No head() here: the home route inherits title/description/og/twitter from
-// __root.tsx, and ships no og:image so serve-time hosting can inject the
-// project's social preview (explicit og:image or latest screenshot).
 export const Route = createFileRoute("/")({
+  head: () => ({
+    meta: [
+      { title: "Eco Fuel — Microwave Plastic Pyrolysis, UAE" },
+      { name: "description", content: "Eco Fuel turns waste plastic into diesel, kerosene, syngas, oxygen and nitrogen. Live MSRP in AED." },
+      { property: "og:title", content: "Eco Fuel — Microwave Plastic Pyrolysis" },
+      { property: "og:description", content: "Live AED prices for fuels made from waste plastic." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+    ],
+  }),
   component: Index,
 });
 
-// IMPORTANT: Replace this placeholder. See ./README.md for routing conventions.
+const SPECS = [
+  ["Technology", "Microwave-assisted pyrolysis"],
+  ["Feedstock", "PP, PE, PS mixed plastic waste"],
+  ["Capacity", "20 tonnes / day"],
+  ["Reactor temp.", "400 – 550 °C"],
+  ["Fuel yield", "Up to 75% liquid oil"],
+  ["Emissions", "Closed-loop, near-zero flare"],
+];
+
 function Index() {
+  const [now, setNow] = useState<number | null>(null);
+  const [litres, setLitres] = useState(1000);
+  const [pid, setPid] = useState("diesel");
+  useEffect(() => {
+    setNow(Date.now());
+    const i = setInterval(() => setNow(Date.now()), 5000);
+    return () => clearInterval(i);
+  }, []);
+  const t = now ?? 0;
+  const price = (id: string, base: number) => (now ? marketPrice(base, id, t) : base);
+  const sel = PRODUCTS.find((p) => p.id === pid)!;
+  const total = price(sel.id, sel.base) * litres;
+
   return (
-    <div
-      className="flex min-h-screen items-center justify-center"
-      style={{ backgroundColor: "#fcfbf8" }}
-    >
-      <img
-        data-lovable-blank-page-placeholder="REMOVE_THIS"
-        src="https://cdn.gpteng.co/blank-app-v1.svg"
-        alt="Your app will live here!"
-      />
-    </div>
+    <main className="min-h-screen bg-background text-foreground">
+      <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
+        <span className="font-display text-2xl">Eco<span className="text-primary">Fuel</span></span>
+        <nav className="flex gap-6 text-sm text-muted-foreground">
+          <a href="#prices">Prices</a><a href="#cost">Cost</a><a href="#quality">Quality</a><a href="#plant">Plant</a>
+        </nav>
+      </header>
+
+      <section className="mx-auto max-w-6xl px-6 py-20">
+        <p className="text-sm uppercase tracking-[0.3em] text-primary">Microwave plastic pyrolysis · UAE</p>
+        <h1 className="font-display mt-4 max-w-4xl text-5xl leading-tight md:text-7xl">Waste plastic in. Clean fuel out.</h1>
+        <p className="mt-6 max-w-xl text-lg text-muted-foreground">We produce, sell and operate fuel from recycled plastic — diesel, kerosene, syngas and industrial gases.</p>
+      </section>
+
+      <section id="prices" className="mx-auto max-w-6xl px-6 py-12">
+        <div className="flex items-end justify-between">
+          <h2 className="font-display text-3xl">Live MSRP</h2>
+          <span className="flex items-center gap-2 text-xs text-muted-foreground"><span className="h-2 w-2 animate-pulse rounded-full bg-primary" />Updates with market · AED</span>
+        </div>
+        <div className="mt-6 grid gap-4 md:grid-cols-5">
+          {PRODUCTS.map((p) => {
+            const v = price(p.id, p.base);
+            const up = v >= p.base;
+            return (
+              <div key={p.id} className="rounded-xl border bg-card p-5">
+                <p className="text-sm text-muted-foreground">{p.name}</p>
+                <p className="font-display mt-2 text-3xl">AED {v.toFixed(2)}</p>
+                <p className="text-xs text-muted-foreground">per {p.unit}</p>
+                <p className={`mt-3 text-xs ${up ? "text-primary" : "text-destructive"}`}>{up ? "▲" : "▼"} {(((v - p.base) / p.base) * 100).toFixed(2)}%</p>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <section id="cost" className="mx-auto max-w-6xl px-6 py-12">
+        <h2 className="font-display text-3xl">Fuel cost calculator</h2>
+        <div className="mt-6 grid gap-4 rounded-xl border bg-card p-6 md:grid-cols-3 md:items-end">
+          <label className="text-sm">Product
+            <select value={pid} onChange={(e) => setPid(e.target.value)} className="mt-2 w-full rounded-md border bg-background p-2">
+              {PRODUCTS.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
+            </select>
+          </label>
+          <label className="text-sm">Quantity ({sel.unit})
+            <input type="number" min={0} value={litres} onChange={(e) => setLitres(Number(e.target.value))} className="mt-2 w-full rounded-md border bg-background p-2" />
+          </label>
+          <div><p className="text-sm text-muted-foreground">Estimated total</p><p className="font-display text-4xl text-primary">AED {total.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p></div>
+        </div>
+      </section>
+
+      <section id="quality" className="mx-auto max-w-6xl px-6 py-12">
+        <h2 className="font-display text-3xl">Product quality</h2>
+        <div className="mt-6 divide-y rounded-xl border bg-card">
+          {PRODUCTS.map((p) => (
+            <div key={p.id} className="grid gap-2 p-5 md:grid-cols-3">
+              <span className="font-medium">{p.name}</span><span className="text-muted-foreground">{p.grade}</span><span className="text-sm text-muted-foreground">{p.spec}</span>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <section id="plant" className="mx-auto max-w-6xl px-6 py-12 pb-24">
+        <h2 className="font-display text-3xl">Plant specifications</h2>
+        <div className="mt-6 grid gap-4 md:grid-cols-3">
+          {SPECS.map(([k, v]) => (
+            <div key={k} className="rounded-xl border bg-card p-5"><p className="text-xs uppercase tracking-widest text-muted-foreground">{k}</p><p className="mt-2 text-lg">{v}</p></div>
+          ))}
+        </div>
+      </section>
+      <footer className="border-t py-8 text-center text-sm text-muted-foreground">© Eco Fuel · Prices are indicative MSRP in UAE Dirhams</footer>
+    </main>
   );
 }
