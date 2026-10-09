@@ -14,13 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      requests: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          kind: string
+          message: string
+          name: string
+          phone: string
+          product: string
+          quantity: string
+          reference: string
+          visit_date: string | null
+          visit_slot: string | null
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          kind: string
+          message?: string
+          name: string
+          phone?: string
+          product?: string
+          quantity?: string
+          reference: string
+          visit_date?: string | null
+          visit_slot?: string | null
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          kind?: string
+          message?: string
+          name?: string
+          phone?: string
+          product?: string
+          quantity?: string
+          reference?: string
+          visit_date?: string | null
+          visit_slot?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_booked_slots: { Args: { _date: string }; Returns: string[] }
+      submit_request: {
+        Args: {
+          _email: string
+          _kind: string
+          _message: string
+          _name: string
+          _phone: string
+          _product: string
+          _quantity: string
+          _visit_date: string
+          _visit_slot: string
+        }
+        Returns: string
+      }
     }
     Enums: {
       [_ in never]: never
