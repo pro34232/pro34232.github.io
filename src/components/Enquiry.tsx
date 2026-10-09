@@ -32,7 +32,7 @@ export function Enquiry() {
   const fetchSlots = useServerFn(getBookedSlots);
   const send = useServerFn(submitRequest);
   const set = (k: string) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value });
-  const visit = f.type === "Booking" && f.product === "Plant visit";
+  const visit = f.type === "Booking";
 
   const loadSlots = (date: string) => {
     setSlotsLoading(true);
@@ -87,7 +87,7 @@ export function Enquiry() {
       <form onSubmit={submit} className="mt-6 grid gap-4 rounded-xl border bg-card p-6 md:grid-cols-2">
         <div className="flex gap-2 md:col-span-2">
           {["Enquiry", "Booking"].map((t) => (
-            <button type="button" key={t} onClick={() => setF({ ...f, type: t })}
+            <button type="button" key={t} onClick={() => setF({ ...f, type: t, date: t === "Booking" && !f.date ? tomorrow() : f.date, slot: "" })}
               className={`rounded-full border px-5 py-2 text-sm ${f.type === t ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>{t}</button>
           ))}
         </div>
@@ -100,8 +100,8 @@ export function Enquiry() {
             <option>Plant visit</option>
           </select>
         </label>
-        {!visit && <label className="text-sm">Quantity<input className={input} value={f.quantity} onChange={set("quantity")} maxLength={30} /></label>}
-        {f.type === "Booking" && <label className="text-sm">{visit ? "Visit date" : "Preferred date"}<input type="date" min={tomorrow()} className={input} value={f.date} onChange={(e) => setF({ ...f, date: e.target.value, slot: "" })} /></label>}
+        {f.product !== "Plant visit" && <label className="text-sm">Quantity<input className={input} value={f.quantity} onChange={set("quantity")} maxLength={30} /></label>}
+        {f.type === "Booking" && <label className="text-sm">{f.product === "Plant visit" ? "Visit date" : "Delivery / collection date"}<input type="date" min={tomorrow()} className={input} value={f.date} onChange={(e) => setF({ ...f, date: e.target.value, slot: "" })} /></label>}
         {visit && (
           <div className="text-sm md:col-span-2">
             Time slot
@@ -126,6 +126,7 @@ export function Enquiry() {
         <button disabled={status.s === "sending"} className="rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground disabled:opacity-60 md:col-span-2 md:justify-self-start">
           {status.s === "sending" ? "Sending…" : status.s === "fail" ? `Try again` : `Send ${f.type.toLowerCase()}`}
         </button>
+        <p className="text-xs text-muted-foreground md:col-span-2">{status.s === "sending" ? "Delivering your request to Eco Fuel…" : "Once Eco Fuel receives your request you'll see a confirmation with a booking reference here."}</p>
       </form>
     </section>
   );
