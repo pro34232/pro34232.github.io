@@ -1,7 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 
-export const SLOTS = ["09:00", "11:00", "13:00", "15:00"];
 
 function client() {
   return import("@supabase/supabase-js").then(({ createClient }) => {
@@ -54,3 +53,12 @@ export const submitRequest = createServerFn({ method: "POST" })
     if (error) return { ok: false as const, reason: error.message.includes("slot") ? "slot" : "error" };
     return { ok: true as const, reference: ref as unknown as string };
   });
+
+export type BookingSettings = { days: number[]; slots: string[]; capacity: number };
+
+export const getBookingSettings = createServerFn({ method: "GET" }).handler(async () => {
+  const sb = await client();
+  const { data, error } = await sb.from("booking_settings").select("days, slots, capacity").eq("id", 1).single();
+  if (error || !data) throw new Error("Could not load booking settings");
+  return data as BookingSettings;
+});
