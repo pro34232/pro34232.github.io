@@ -1,7 +1,8 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Enquiry } from "@/components/Enquiry";
-import { PRODUCTS, marketPrice } from "@/lib/prices";
+import { PRODUCTS } from "@/lib/prices";
+import { getLivePrices, type LivePrice } from "@/lib/market.functions";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -27,16 +28,18 @@ const SPECS = [
 ];
 
 function Index() {
-  const [now, setNow] = useState<number | null>(null);
+  const [live, setLive] = useState<{ prices: LivePrice[]; updated: number } | null>(null);
+  const [feedDown, setFeedDown] = useState(false);
   const [litres, setLitres] = useState(1000);
   const [pid, setPid] = useState("diesel");
   useEffect(() => {
-    setNow(Date.now());
-    const i = setInterval(() => setNow(Date.now()), 5000);
+    const load = () => getLivePrices().then((d) => { setLive(d); setFeedDown(false); }).catch(() => setFeedDown(true));
+    load();
+    const i = setInterval(load, 60000);
     return () => clearInterval(i);
   }, []);
-  const t = now ?? 0;
-  const price = (id: string, base: number) => (now ? marketPrice(base, id, t) : base);
+  const lp = (id: string) => live?.prices.find((x) => x.id === id);
+  const price = (id: string, base: number) => lp(id)?.price ?? base;
   const sel = PRODUCTS.find((p) => p.id === pid)!;
   const total = price(sel.id, sel.base) * litres;
 
@@ -58,18 +61,20 @@ function Index() {
       <section id="prices" className="mx-auto max-w-6xl px-6 py-12">
         <div className="flex items-end justify-between">
           <h2 className="font-display text-3xl">Live MSRP</h2>
-          <span className="flex items-center gap-2 text-xs text-muted-foreground"><span className="h-2 w-2 animate-pulse rounded-full bg-primary" />Updates with market · AED</span>
+          <span className="flex items-center gap-2 text-xs text-muted-foreground"><span className="h-2 w-2 animate-pulse rounded-full bg-primary" />{feedDown ? "Market feed unavailable · showing last prices" : live ? `Live market · updated ${new Date(live.updated).toLocaleString()} · AED` : "Loading market prices…"}</span>
         </div>
         <div className="mt-6 grid gap-4 md:grid-cols-5">
           {PRODUCTS.map((p) => {
             const v = price(p.id, p.base);
-            const up = v >= p.base;
+            const q = lp(p.id);
+            const ref = q?.prev ?? v;
+            const up = v >= ref;
             return (
               <div key={p.id} className="rounded-xl border bg-card p-5">
                 <p className="text-sm text-muted-foreground">{p.name}</p>
                 <p className="font-display mt-2 text-3xl">AED {v.toFixed(2)}</p>
                 <p className="text-xs text-muted-foreground">per {p.unit}</p>
-                <p className={`mt-3 text-xs ${up ? "text-primary" : "text-destructive"}`}>{up ? "▲" : "▼"} {(((v - p.base) / p.base) * 100).toFixed(2)}%</p>
+                <p className={`mt-3 text-xs ${up ? "text-primary" : "text-destructive"}`}>{q && !q.live ? "Fixed list price" : <>{up ? "▲" : "▼"} {(((v - ref) / ref) * 100).toFixed(2)}% today</>}</p>
               </div>
             );
           })}
