@@ -23,7 +23,7 @@ const SPECS = [
   ["Technology", "Microwave-assisted pyrolysis"],
   ["Feedstock", "PP, PE, PS mixed plastic waste"],
   ["Capacity", "20 tonnes / day"],
-  ["Reactor temp.", "400 – 550 °C"],
+  ["Reactor temp.", "100 – 200 °C"],
   ["Fuel yield", "Up to 75% liquid oil"],
   ["Emissions", "Closed-loop, near-zero flare"],
 ];
