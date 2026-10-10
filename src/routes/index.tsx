@@ -1,6 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Enquiry } from "@/components/Enquiry";
+import { Advisor } from "@/components/Advisor";
 import { PRODUCTS } from "@/lib/prices";
 import { getLivePrices, type LivePrice } from "@/lib/market.functions";
 
@@ -48,7 +49,7 @@ function Index() {
       <header className="mx-auto flex max-w-6xl items-center justify-between px-6 py-6">
         <span className="font-display text-2xl">Eco<span className="text-primary">Fuel</span></span>
         <nav className="flex gap-6 text-sm text-muted-foreground">
-          <a href="#prices">Prices</a><a href="#cost">Cost</a><a href="#quality">Quality</a><a href="#plant">Plant</a><a href="#enquiry">Book</a>
+          <a href="#prices">Prices</a><a href="#cost">Cost</a><a href="#advisor">Advisor</a><a href="#quality">Quality</a><a href="#plant">Plant</a><a href="#enquiry">Book</a><a href="/admin">Owner</a>
         </nav>
       </header>
 
@@ -80,6 +81,8 @@ function Index() {
           })}
         </div>
       </section>
+
+      <Advisor />
 
       <section id="cost" className="mx-auto max-w-6xl px-6 py-12">
         <h2 className="font-display text-3xl">Fuel cost calculator</h2>
