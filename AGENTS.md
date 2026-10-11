@@ -11,3 +11,4 @@
 
 - Use the shared SiteHeader for public content pages so navigation stays consistent and collapses on small screens.
 - Keep pyrolysis education in dedicated FAQ and safety routes; reuse Comparison for the interactive trade-off cards.
+- Share the booking slot mapping in a tested browser-safe helper so every booking type reserves its selected slot.
