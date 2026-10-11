@@ -63,7 +63,7 @@
 }
 
 :root {
-  --radius: 0.625rem;
+  --radius: 0.5rem;
   --background: oklch(0.16 0.02 160);
   --foreground: oklch(0.96 0.01 120);
   --card: oklch(0.21 0.025 160);
@@ -71,7 +71,7 @@
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.129 0.042 264.695);
   --primary: oklch(0.82 0.19 135);
-  --primary-foreground: oklch(0.984 0.003 247.858);
+  --primary-foreground: oklch(0.16 0.02 160);
   --secondary: oklch(0.968 0.007 247.896);
   --secondary-foreground: oklch(0.208 0.042 265.755);
   --muted: oklch(0.968 0.007 247.896);
@@ -146,3 +146,13 @@
 
 @utility font-display { font-family: var(--font-display); }
 body { font-family: "DM Sans", sans-serif; }
+
+html { scroll-padding-top: 1.5rem; }
+body { letter-spacing: 0; }
+input, select, textarea { font-size: 1rem; }
+@media (max-width: 639px) {
+  main > section { padding-left: 1rem; padding-right: 1rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation-duration: 0.01ms !important; transition-duration: 0.01ms !important; scroll-behavior: auto !important; }
+}

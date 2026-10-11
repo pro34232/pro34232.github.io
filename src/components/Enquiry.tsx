@@ -1,3 +1,4 @@
+import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { z } from "zod";
 import { useServerFn } from "@tanstack/react-start";
@@ -19,7 +20,7 @@ const schema = z.object({
   message: z.string().trim().max(1000),
 });
 
-const input = "mt-2 w-full rounded-md border bg-background p-2";
+const input = "mt-2 min-w-0 min-h-11 w-full rounded-md border bg-background p-2";
 const DAY = 86400000;
 const iso = (t: number) => new Date(t).toISOString().slice(0, 10);
 const dow = (d: string) => new Date(d + "T00:00:00Z").getUTCDay();
@@ -79,44 +80,44 @@ export function Enquiry() {
 
   if (status.s === "ok") {
     return (
-      <section id="enquiry" className="mx-auto max-w-6xl px-6 py-12 pb-24">
-        <div role="status" className="rounded-xl border border-primary bg-card p-8">
+      <section id="enquiry" className="mx-auto max-w-6xl px-4 py-12 sm:px-6 pb-24">
+        <div role="status" className="rounded-lg border border-primary bg-card p-5 sm:p-8">
           <p className="text-sm text-primary">✓ Received by Eco Fuel</p>
-          <h2 className="font-display mt-2 text-3xl">Thank you, {f.name}</h2>
-          <p className="mt-3 text-muted-foreground">Your {status.type.toLowerCase()} has been received{visit ? ` for ${f.date} at ${f.slot}` : ""}. Our team will reply to {f.email}.</p>
+          <h2 className="font-display mt-2 break-words text-3xl">Thank you, {f.name}</h2>
+          <p className="mt-3 break-words text-muted-foreground">Your {status.type.toLowerCase()} has been received{visit ? ` for ${f.date} at ${f.slot}` : ""}. Our team will reply to {f.email}.</p>
           <p className="mt-6 text-sm text-muted-foreground">Your booking reference</p>
           <p className="font-display text-4xl tracking-wider">{status.ref}</p>
           <p className="mt-2 text-xs text-muted-foreground">Keep this reference and quote it if you contact us at {CONTACT_EMAIL}.</p>
-          <button onClick={() => { setStatus({ s: "idle" }); setF({ ...f, message: "", slot: "" }); }} className="mt-6 rounded-md border px-5 py-2 text-sm">Send another request</button>
+          <Button variant="outline" onClick={() => { setStatus({ s: "idle" }); setF({ ...f, message: "", slot: "" }); }} className="mt-6 rounded-md border px-5 py-2 text-sm">Send another request</Button>
         </div>
       </section>
     );
   }
 
   return (
-    <section id="enquiry" className="mx-auto max-w-6xl px-6 py-12 pb-24">
+    <section id="enquiry" className="mx-auto max-w-6xl px-4 py-12 sm:px-6 pb-24">
       <h2 className="font-display text-3xl">Enquiry & booking</h2>
       <p className="mt-2 text-muted-foreground">Ask a question, request a quote, or book a fuel order or plant visit. Or email <a className="text-primary" href={`mailto:${MAILBOX}`}>{CONTACT_EMAIL}</a>.</p>
-      <form onSubmit={submit} className="mt-6 grid gap-4 rounded-xl border bg-card p-6 md:grid-cols-2">
+      <form onSubmit={submit} className="mt-6 grid gap-4 rounded-lg border bg-card p-4 sm:p-6 md:grid-cols-2">
         <div className="flex gap-2 md:col-span-2">
           {["Enquiry", "Booking"].map((t) => (
-            <button type="button" key={t} onClick={() => setF({ ...f, type: t, date: t === "Booking" && !f.date ? tomorrow() : f.date, slot: "" })}
-              className={`rounded-full border px-5 py-2 text-sm ${f.type === t ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>{t}</button>
+            <Button variant="outline" type="button" key={t} onClick={() => setF({ ...f, type: t, date: t === "Booking" && !f.date ? tomorrow() : f.date, slot: "" })}
+              className={`min-h-11 border-border rounded-md border px-5 py-2 text-sm ${f.type === t ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>{t}</Button>
           ))}
         </div>
-        <label className="text-sm">Name<input className={input} value={f.name} onChange={set("name")} maxLength={100} /></label>
-        <label className="text-sm">Email<input type="email" className={input} value={f.email} onChange={set("email")} maxLength={255} /></label>
-        <label className="text-sm">Phone<input className={input} value={f.phone} onChange={set("phone")} maxLength={30} /></label>
-        <label className="text-sm">Product
+        <label className="min-w-0 text-sm">Name<input className={input} value={f.name} onChange={set("name")} maxLength={100} /></label>
+        <label className="min-w-0 text-sm">Email<input type="email" className={input} value={f.email} onChange={set("email")} maxLength={255} /></label>
+        <label className="min-w-0 text-sm">Phone<input className={input} value={f.phone} onChange={set("phone")} maxLength={30} /></label>
+        <label className="min-w-0 text-sm">Product
           <select className={input} value={f.product} onChange={set("product")}>
             {PRODUCTS.map((p) => <option key={p.id}>{p.name}</option>)}
             <option>Plant visit</option>
           </select>
         </label>
-        {f.product !== "Plant visit" && <label className="text-sm">Quantity<input className={input} value={f.quantity} onChange={set("quantity")} maxLength={30} /></label>}
-        {f.type === "Booking" && <label className="text-sm">{f.product === "Plant visit" ? "Visit date" : "Delivery / collection date"}<input type="date" min={iso(Date.now() + DAY)} className={input} value={f.date} onChange={(e) => setF({ ...f, date: e.target.value, slot: "" })} /></label>}
+        {f.product !== "Plant visit" && <label className="min-w-0 text-sm">Quantity<input className={input} value={f.quantity} onChange={set("quantity")} maxLength={30} /></label>}
+        {f.type === "Booking" && <label className="min-w-0 text-sm">{f.product === "Plant visit" ? "Visit date" : "Delivery / collection date"}<input type="date" min={iso(Date.now() + DAY)} className={input} value={f.date} onChange={(e) => setF({ ...f, date: e.target.value, slot: "" })} /></label>}
         {visit && (
-          <div className="text-sm md:col-span-2">
+          <div className="min-w-0 text-sm md:col-span-2">
             Time slot
             {cfg && <span className="ml-2 text-xs text-muted-foreground">Open {cfg.days.map((d) => DAY_NAMES[d]).join(", ")}</span>}
             {!f.date ? <p className="mt-2 text-muted-foreground">Choose a date to see available times.</p> : closed ? <p className="mt-2 text-destructive">Closed on {DAY_NAMES[dow(f.date)]}s — please pick another date.</p> : !cfg ? <p className="mt-2 text-muted-foreground">Loading times…</p> : (
@@ -124,22 +125,22 @@ export function Enquiry() {
                 {cfg.slots.map((s) => {
                   const taken = booked.includes(s);
                   return (
-                    <button type="button" key={s} disabled={taken || slotsLoading} onClick={() => setF({ ...f, slot: s })}
-                      className={`rounded-md border px-4 py-2 ${f.slot === s ? "bg-primary text-primary-foreground" : ""} ${taken ? "cursor-not-allowed line-through opacity-40" : ""}`}>
+                    <Button variant="outline" type="button" key={s} disabled={taken || slotsLoading} onClick={() => setF({ ...f, slot: s })}
+                      className={`min-h-11 border-border rounded-md border px-4 py-2 ${f.slot === s ? "bg-primary text-primary-foreground" : ""} ${taken ? "cursor-not-allowed line-through opacity-40" : ""}`}>
                       {s}{taken ? " · full" : ""}
-                    </button>
+                    </Button>
                   );
                 })}
               </div>
             )}
           </div>
         )}
-        <label className="text-sm md:col-span-2">Message<textarea rows={4} className={input} value={f.message} onChange={set("message")} maxLength={1000} /></label>
+        <label className="min-w-0 text-sm md:col-span-2">Message<textarea rows={4} className={input} value={f.message} onChange={set("message")} maxLength={1000} /></label>
         {err && <p className="text-sm text-destructive md:col-span-2">{err}</p>}
         {status.s === "fail" && <p role="alert" className="rounded-md border border-destructive p-3 text-sm text-destructive md:col-span-2">✕ Not sent. {status.msg} If it keeps failing, email us directly at {CONTACT_EMAIL}.</p>}
-        <button disabled={status.s === "sending"} className="rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground disabled:opacity-60 md:col-span-2 md:justify-self-start">
+        <Button disabled={status.s === "sending"} type="submit" className="h-auto min-h-11 rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground disabled:opacity-60 md:col-span-2 md:justify-self-start">
           {status.s === "sending" ? "Sending…" : status.s === "fail" ? `Try again` : `Send ${f.type.toLowerCase()}`}
-        </button>
+        </Button>
         <p className="text-xs text-muted-foreground md:col-span-2">{status.s === "sending" ? "Delivering your request to Eco Fuel…" : "Once Eco Fuel receives your request you'll see a confirmation with a booking reference here."}</p>
       </form>
     </section>
