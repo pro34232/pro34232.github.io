@@ -1,5 +1,6 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import { requestBookingSlot } from "./booking";
 
 
 function client() {
@@ -43,12 +44,12 @@ const schema = z.object({
 export const submitRequest = createServerFn({ method: "POST" })
   .inputValidator((d: z.input<typeof schema>) => schema.parse(d))
   .handler(async ({ data }) => {
-    const visit = data.type === "Booking" && data.product === "Plant visit";
+    if (data.type === "Booking" && !data.slot) return { ok: false as const, reason: "slot" };
     const sb = await client();
     const { data: ref, error } = await sb.rpc("submit_request", {
       _kind: data.type, _name: data.name, _email: data.email, _phone: data.phone, _product: data.product,
       _quantity: data.quantity, _visit_date: data.type === "Booking" && data.date ? data.date : null,
-      _visit_slot: visit ? data.slot : null, _message: data.message,
+      _visit_slot: requestBookingSlot(data.type, data.slot), _message: data.message,
     } as never);
     if (error) return { ok: false as const, reason: error.message.includes("slot") ? "slot" : "error" };
     return { ok: true as const, reference: ref as unknown as string };
