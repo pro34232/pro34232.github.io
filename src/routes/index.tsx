@@ -64,7 +64,7 @@ function Index() {
           <h2 className="font-display text-3xl">Live MSRP</h2>
           <span className="flex min-w-0 items-center gap-2 text-xs text-muted-foreground"><span className="h-2 w-2 shrink-0 motion-safe:animate-pulse rounded-full bg-primary" />{feedDown ? "Market feed unavailable · showing indicative prices" : live ? `Market benchmark · updated ${new Date(live.updated).toLocaleString()} · AED` : "Loading market prices…"}</span>
         </div>
-        <p className="mt-3 text-xs text-muted-foreground">Indicative prices: diesel uses a US ULSD futures benchmark, not a UAE retail quote. Margins and oxygen / nitrogen list prices await owner confirmation.</p>
+        <p className="mt-3 text-xs text-muted-foreground">Prices update automatically every day with the market (checked every minute). Indicative prices: diesel uses a US ULSD futures benchmark, not a UAE retail quote. Margins and oxygen / nitrogen list prices await owner confirmation.</p>
         <div className="mt-6 grid gap-4 sm:grid-cols-2 md:grid-cols-3 xl:grid-cols-5">
           {PRODUCTS.map((p) => {
             const v = price(p.id, p.base);
