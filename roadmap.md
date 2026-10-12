@@ -5,6 +5,6 @@
 - [x] Check and improve phone, tablet, and computer layouts
 - [x] Add pyrolysis FAQ and safety / sustainability information
 - [x] Add interactive advantages-versus-limitations comparison cards
-- [ ] Test owner settings saves and booking slot capacity end to end
+- [x] Test owner settings saves and booking slot capacity end to end
 - [ ] Replace placeholder margins and gas prices — blocked: awaiting real AED values
 - [ ] Update diesel feed — blocked: awaiting chosen source
