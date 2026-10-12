@@ -15,6 +15,13 @@
       "when": 1791567385045,
       "tag": "0001_booking_settings_admin",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1791811518056,
+      "tag": "0002_grant_owner_existing",
+      "breakpoints": true
     }
   ]
 }
