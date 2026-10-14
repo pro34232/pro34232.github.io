@@ -64,6 +64,11 @@
 
 :root {
   --radius: 0.5rem;
+  --plant-silver: oklch(0.83 0.008 190);
+  --plant-board: oklch(0.59 0.17 150);
+  --plant-seam: oklch(0.38 0.008 190);
+  --plant-interior: oklch(0.3 0.02 70);
+  --plant-light: oklch(0.98 0.005 190);
   --background: oklch(0.16 0.02 160);
   --foreground: oklch(0.96 0.01 120);
   --card: oklch(0.21 0.025 160);
@@ -148,6 +153,7 @@
 body { font-family: "DM Sans", sans-serif; }
 
 html { scroll-padding-top: 1.5rem; }
+.plant-canvas canvas { touch-action: none; }
 body { letter-spacing: 0; }
 input, select, textarea { font-size: 1rem; }
 @media (max-width: 639px) {
