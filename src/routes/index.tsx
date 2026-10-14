@@ -1,5 +1,5 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { ClientOnly, createFileRoute } from "@tanstack/react-router";
+import { lazy, Suspense, useEffect, useState } from "react";
 import { Enquiry } from "@/components/Enquiry";
 import { Advisor } from "@/components/Advisor";
 import { SiteHeader } from "@/components/SiteHeader";
@@ -7,6 +7,8 @@ import { Comparison } from "@/components/Comparison";
 import { Link } from "@tanstack/react-router";
 import { PRODUCTS } from "@/lib/prices";
 import { getLivePrices, type LivePrice } from "@/lib/market.functions";
+
+const PlantViewer = lazy(() => import("@/components/plant/PlantViewer"));
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -113,6 +115,7 @@ function Index() {
 
       <section id="plant" className="mx-auto max-w-6xl px-6 py-12">
         <h2 className="font-display text-3xl">Plant specifications</h2>
+        <ClientOnly fallback={<div className="h-[480px]" />}><Suspense fallback={<div className="flex h-[480px] items-center justify-center text-muted-foreground">Loading plant model…</div>}><PlantViewer /></Suspense></ClientOnly>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
           {SPECS.map(([k, v]) => (
             <div key={k} className="rounded-xl border bg-card p-5"><p className="text-xs uppercase tracking-widest text-muted-foreground">{k}</p><p className="mt-2 text-lg">{v}</p></div>
