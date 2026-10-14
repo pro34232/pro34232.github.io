@@ -29,7 +29,7 @@ function Marker({ number, position, visible }: { number: number; position: [numb
   const point = useMemo(() => new Vector3(...position).add(new Vector3(0, 0.09, 0)), [position]);
   const projected = useMemo(() => new Vector3(), []);
   useFrame(({ camera, gl, size }) => {
-    const label = gl.domElement.parentElement?.parentElement?.querySelector<HTMLElement>(`[data-plant-marker="${number}"]`);
+    const label = gl.domElement.closest(".plant-canvas")?.querySelector<HTMLElement>(`[data-plant-marker="${number}"]`);
     if (!label) return;
     projected.copy(point).project(camera);
     label.style.display = visible && projected.z < 1 ? "flex" : "none";
