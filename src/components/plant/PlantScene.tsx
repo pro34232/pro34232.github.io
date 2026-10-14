@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from "react";
-import { Html } from "@react-three/drei";
-import { CanvasTexture, RepeatWrapping, SRGBColorSpace } from "three";
-import type { ThreeElements } from "@react-three/fiber";
+import { CanvasTexture, RepeatWrapping, SRGBColorSpace, Vector3 } from "three";
+import { useFrame, type ThreeElements } from "@react-three/fiber";
 
 export const PARTS = ["Horizontal chamber", "Large vessel", "Rear vessel", "Small vessel", "Tall column"];
 export type PlantPalette = { silver: string; board: string; seam: string; interior: string; light: string };
@@ -27,7 +26,16 @@ function surfaceTexture() {
 }
 
 function Marker({ number, position, visible }: { number: number; position: [number, number, number]; visible: boolean }) {
-  return <Html position={position} center zIndexRange={[20, 0]}><span className={`${visible ? "flex" : "hidden"} h-7 w-7 items-center justify-center rounded-full border border-primary bg-background text-xs font-semibold text-primary pointer-events-none`} aria-label={PARTS[number - 1]}>{number}</span></Html>;
+  const point = useMemo(() => new Vector3(...position).add(new Vector3(0, 0.09, 0)), [position]);
+  const projected = useMemo(() => new Vector3(), []);
+  useFrame(({ camera, gl, size }) => {
+    const label = gl.domElement.parentElement?.parentElement?.querySelector<HTMLElement>(`[data-plant-marker="${number}"]`);
+    if (!label) return;
+    projected.copy(point).project(camera);
+    label.style.display = visible && projected.z < 1 ? "flex" : "none";
+    label.style.transform = `translate(${(projected.x + 1) * size.width / 2}px,${(1 - projected.y) * size.height / 2}px) translate(-50%,-50%)`;
+  });
+  return null;
 }
 
 export function PlantScene({ palette, labels }: { palette: PlantPalette; labels: boolean }) {

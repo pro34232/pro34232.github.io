@@ -67,6 +67,9 @@ export default function PlantViewer() {
           <OrbitControls ref={controls} makeDefault target={[0, 1.1, 0]} minDistance={7} maxDistance={24} minPolarAngle={0.2} maxPolarAngle={Math.PI / 2.05} enablePan={false} enableDamping />
         </Canvas>}
       </ViewerBoundary>
+      <div className="pointer-events-none absolute inset-0 overflow-hidden" aria-hidden="true">
+        {PARTS.map((part, i) => <span key={part} data-plant-marker={i + 1} className="absolute left-0 top-0 flex h-7 w-7 items-center justify-center rounded-full border border-primary bg-background text-xs font-semibold text-primary">{i + 1}</span>)}
+      </div>
     </div>
     <ol className="grid grid-cols-2 gap-x-5 gap-y-3 border-t pt-4 sm:grid-cols-3 lg:grid-cols-5" aria-label="Plant parts">
       {PARTS.map((part, i) => <li key={part} className="flex gap-2 text-sm"><span className="text-primary font-medium">{i + 1 < 10 ? `0${i + 1}` : i + 1}</span><span>{part}</span></li>)}
