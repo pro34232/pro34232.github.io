@@ -11,7 +11,7 @@ export function SiteHeader() {
         <Link to="/" className="font-display min-w-0 text-2xl">Eco<span className="text-primary">Fuel</span></Link>
         <Button variant="outline" className="h-11 w-11 border-border text-foreground lg:hidden" size="icon" aria-label={open ? "Close navigation" : "Open navigation"} aria-expanded={open} aria-controls="site-navigation" onClick={() => setOpen(!open)}>{open ? <X /> : <Menu />}</Button>
         <nav id="site-navigation" aria-label="Main navigation" className={`${open ? "grid" : "hidden"} col-span-2 grid-cols-2 gap-2 text-sm text-muted-foreground lg:col-span-1 lg:flex lg:items-center lg:gap-3`} onClick={() => setOpen(false)}>
-          {[['prices', 'Prices'], ['cost', 'Cost'], ['advisor', 'Advisor'], ['quality', 'Quality'], ['plant', 'Plant'], ['enquiry', 'Book']].map(([hash, label]) => <Link key={hash} to="/" hash={hash} className="min-w-0 rounded-md px-2 py-3 hover:text-primary lg:py-2">{label}</Link>)}
+          {([['prices', 'Prices'], ['cost', 'Cost'], ['advisor', 'Advisor'], ['quality', 'Quality'], ['plant', 'Plant'], ['enquiry', 'Book']] as const).map(([hash, label]) => <Link key={hash} to="/" hash={hash} className="min-w-0 rounded-md px-2 py-3 hover:text-primary lg:py-2">{label}</Link>)}
           <Link to="/faq" className="px-2 py-3 hover:text-primary lg:py-2">FAQ</Link>
           <Link to="/safety" className="px-2 py-3 hover:text-primary lg:py-2">Safety</Link>
           <Link to="/admin" className="px-2 py-3 hover:text-primary lg:py-2">Owner</Link>

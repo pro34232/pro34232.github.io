@@ -6,9 +6,9 @@ import { Button } from "@/components/ui/button";
 import { PARTS, PlantScene, type PlantPalette } from "./PlantScene";
 
 class ViewerBoundary extends Component<{ children: ReactNode }, { failed: boolean }> {
-  state = { failed: false };
+  override state = { failed: false };
   static getDerivedStateFromError() { return { failed: true }; }
-  render() { return this.state.failed ? <div className="p-8 text-muted-foreground" role="status">The 3D view is unavailable on this device.</div> : this.props.children; }
+  override render() { return this.state.failed ? <div className="p-8 text-muted-foreground" role="status">The 3D view is unavailable on this device.</div> : this.props.children; }
 }
 
 export default function PlantViewer() {
