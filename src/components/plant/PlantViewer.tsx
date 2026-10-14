@@ -19,7 +19,18 @@ export default function PlantViewer() {
   useEffect(() => {
     if (!container.current) return;
     const styles = getComputedStyle(container.current);
-    const read = (name: string) => styles.getPropertyValue(name).trim();
+    // Canvas converts CSS theme colors into sRGB values understood by Three.js.
+    const swatch = document.createElement("canvas");
+    swatch.width = swatch.height = 1;
+    const ctx = swatch.getContext("2d", { willReadFrequently: true });
+    if (!ctx) return;
+    const read = (name: string) => {
+      ctx.clearRect(0, 0, 1, 1);
+      ctx.fillStyle = styles.getPropertyValue(name).trim();
+      ctx.fillRect(0, 0, 1, 1);
+      const pixel = ctx.getImageData(0, 0, 1, 1).data;
+      return `rgb(${pixel[0]},${pixel[1]},${pixel[2]})`;
+    };
     setPalette({ silver: read("--plant-silver"), board: read("--plant-board"), seam: read("--plant-seam"), interior: read("--plant-interior"), light: read("--plant-light") });
   }, []);
   const zoom = (factor: number) => {

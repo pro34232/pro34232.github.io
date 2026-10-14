@@ -26,8 +26,8 @@ function surfaceTexture() {
   return texture;
 }
 
-function Marker({ number, position }: { number: number; position: [number, number, number] }) {
-  return <Html position={position} center zIndexRange={[20, 0]}><span className="flex h-7 w-7 items-center justify-center rounded-full border border-primary bg-background text-xs font-semibold text-primary pointer-events-none" aria-label={PARTS[number - 1]}>{number}</span></Html>;
+function Marker({ number, position, visible }: { number: number; position: [number, number, number]; visible: boolean }) {
+  return <Html position={position} center zIndexRange={[20, 0]}><span className={`${visible ? "flex" : "hidden"} h-7 w-7 items-center justify-center rounded-full border border-primary bg-background text-xs font-semibold text-primary pointer-events-none`} aria-label={PARTS[number - 1]}>{number}</span></Html>;
 }
 
 export function PlantScene({ palette, labels }: { palette: PlantPalette; labels: boolean }) {
@@ -58,6 +58,6 @@ export function PlantScene({ palette, labels }: { palette: PlantPalette; labels:
     <mesh position={[1.42, 0.35, 0.12]} rotation-y={-0.5} castShadow><boxGeometry args={[0.9, 0.45, 0.38]} /><meshStandardMaterial {...metal} /></mesh>
     <mesh position={[2.78, 0.27, 0.7]} castShadow><boxGeometry args={[0.85, 0.5, 0.44]} /><meshStandardMaterial {...metal} /></mesh>
     <mesh position={[-0.13, 0.58, 0.15]} rotation-y={0.5} castShadow><boxGeometry args={[0.75, 0.46, 0.45]} /><meshStandardMaterial {...metal} /></mesh>
-    {labels && <><Marker number={1} position={[-1.65, 1.8, 0.85]} /><Marker number={2} position={[0.5, 2.35, -0.45]} /><Marker number={3} position={[-2.05, 1.9, -1.55]} /><Marker number={4} position={[2.05, 1.35, 0.6]} /><Marker number={5} position={[3.4, 3.95, 0.7]} /></>}
+    <Marker visible={labels} number={1} position={[-1.65, 1.8, 0.85]} /><Marker visible={labels} number={2} position={[0.5, 2.35, -0.45]} /><Marker visible={labels} number={3} position={[-2.05, 1.9, -1.55]} /><Marker visible={labels} number={4} position={[2.05, 1.35, 0.6]} /><Marker visible={labels} number={5} position={[3.4, 3.95, 0.7]} />
   </group>;
 }
