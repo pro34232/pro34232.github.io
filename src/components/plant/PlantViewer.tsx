@@ -74,6 +74,6 @@ export default function PlantViewer() {
     <ol className="grid grid-cols-2 gap-x-5 gap-y-3 border-t pt-4 sm:grid-cols-3 lg:grid-cols-5" aria-label="Plant parts">
       {PARTS.map((part, i) => <li key={part} className="flex gap-2 text-sm"><span className="text-primary font-medium">{i + 1 < 10 ? `0${i + 1}` : i + 1}</span><span>{part}</span></li>)}
     </ol>
-    <p className="mt-3 text-xs text-muted-foreground">Descriptive labels only; process functions and dimensions are not confirmed.</p>
+    <p className="mt-3 text-xs text-muted-foreground">Proportions and dimensions are approximate.</p>
   </div>;
 }

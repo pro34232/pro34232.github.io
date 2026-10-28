@@ -2,7 +2,8 @@ import { useEffect, useMemo } from "react";
 import { CanvasTexture, RepeatWrapping, SRGBColorSpace, Vector3 } from "three";
 import { useFrame, type ThreeElements } from "@react-three/fiber";
 
-export const PARTS = ["Horizontal chamber", "Large vessel", "Rear vessel", "Small vessel", "Tall column"];
+// Part names confirmed by the owner.
+export const PARTS = ["Pyrolysis reactor", "Condenser", "Catalyst chamber", "Fuel collector tank", "Fractional distillation column"];
 export type PlantPalette = { silver: string; board: string; seam: string; interior: string; light: string };
 
 function surfaceTexture() {
