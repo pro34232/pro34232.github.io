@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminRouteImport } from './routes/admin'
+import { Route as BrochureRouteImport } from './routes/brochure'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as SafetyRouteImport } from './routes/safety'
 
@@ -22,6 +23,11 @@ const IndexRoute = IndexRouteImport.update({
 const AdminRoute = AdminRouteImport.update({
   id: '/admin',
   path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BrochureRoute = BrochureRouteImport.update({
+  id: '/brochure',
+  path: '/brochure',
   getParentRoute: () => rootRouteImport,
 } as any)
 const FaqRoute = FaqRouteImport.update({
@@ -38,12 +44,14 @@ const SafetyRoute = SafetyRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/brochure': typeof BrochureRoute
   '/faq': typeof FaqRoute
   '/safety': typeof SafetyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/brochure': typeof BrochureRoute
   '/faq': typeof FaqRoute
   '/safety': typeof SafetyRoute
 }
@@ -51,20 +59,22 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/admin': typeof AdminRoute
+  '/brochure': typeof BrochureRoute
   '/faq': typeof FaqRoute
   '/safety': typeof SafetyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/faq' | '/safety'
+  fullPaths: '/' | '/admin' | '/brochure' | '/faq' | '/safety'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/faq' | '/safety'
-  id: '__root__' | '/' | '/admin' | '/faq' | '/safety'
+  to: '/' | '/admin' | '/brochure' | '/faq' | '/safety'
+  id: '__root__' | '/' | '/admin' | '/brochure' | '/faq' | '/safety'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRoute
+  BrochureRoute: typeof BrochureRoute
   FaqRoute: typeof FaqRoute
   SafetyRoute: typeof SafetyRoute
 }
@@ -83,6 +93,13 @@ declare module '@tanstack/react-router' {
       path: '/admin'
       fullPath: '/admin'
       preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/brochure': {
+      id: '/brochure'
+      path: '/brochure'
+      fullPath: '/brochure'
+      preLoaderRoute: typeof BrochureRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/faq': {
@@ -105,6 +122,7 @@ declare module '@tanstack/react-router' {
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRoute,
+  BrochureRoute: BrochureRoute,
   FaqRoute: FaqRoute,
   SafetyRoute: SafetyRoute,
 }

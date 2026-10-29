@@ -6,6 +6,7 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { Comparison } from "@/components/Comparison";
 import { Link } from "@tanstack/react-router";
 import { PRODUCTS } from "@/lib/prices";
+import { PLANT_SPECS } from "@/lib/plant";
 import { getLivePrices, type LivePrice } from "@/lib/market.functions";
 
 const PlantViewer = lazy(() => import("@/components/plant/PlantViewer"));
@@ -24,14 +25,6 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const SPECS = [
-  ["Technology", "Microwave-assisted pyrolysis"],
-  ["Feedstock", "PP, PE, PS mixed plastic waste"],
-  ["Capacity", "20 tonnes / day"],
-  ["Reactor temp.", "100 – 200 °C"],
-  ["Fuel yield", "Up to 75% liquid oil"],
-  ["Emissions", "Capture, treatment & monitoring required"],
-];
 
 function Index() {
   const [live, setLive] = useState<{ prices: LivePrice[]; updated: number } | null>(null);
@@ -114,13 +107,17 @@ function Index() {
       </section>
 
       <section id="plant" className="mx-auto max-w-6xl px-6 py-12">
-        <h2 className="font-display text-3xl">Plant specifications</h2>
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <h2 className="font-display text-3xl">Plant specifications</h2>
+          <Link to="/brochure" className="inline-block py-2 text-primary underline underline-offset-4">View plant brochure →</Link>
+        </div>
         <ClientOnly fallback={<div className="h-[480px]" />}><Suspense fallback={<div className="flex h-[480px] items-center justify-center text-muted-foreground">Loading plant model…</div>}><PlantViewer /></Suspense></ClientOnly>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
-          {SPECS.map(([k, v]) => (
+          {PLANT_SPECS.map(([k, v]) => (
             <div key={k} className="rounded-xl border bg-card p-5"><p className="text-xs uppercase tracking-widest text-muted-foreground">{k}</p><p className="mt-2 text-lg">{v}</p></div>
           ))}
         </div>
+        <Link to="/brochure" className="mt-6 inline-flex min-h-11 items-center rounded-md border px-4 text-sm hover:text-primary">Layout, process flow, safety standards & specs — open the brochure</Link>
       </section>
       <Comparison />
       <section className="mx-auto grid max-w-6xl gap-5 border-t px-4 py-12 sm:px-6 md:grid-cols-2">

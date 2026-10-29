@@ -7,5 +7,6 @@
 - [x] Add pyrolysis FAQ and safety / sustainability information
 - [x] Add interactive advantages-versus-limitations comparison cards
 - [x] Test owner settings saves and booking slot capacity end to end
+- [x] Plant brochure page (layout, process flow, safety standards, specs) linked from Plant section
 - [ ] Replace placeholder margins and gas prices — blocked: awaiting real AED values
 - [ ] Update diesel feed — blocked: awaiting chosen source
