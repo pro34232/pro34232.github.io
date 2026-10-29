@@ -64,7 +64,7 @@ function LayoutDiagram() {
           <path d="M0 0 L10 5 L0 10 z" className="fill-primary" />
         </marker>
       </defs>
-      <rect x="1" y="1" width="758" height="298" rx="10" className="fill-muted/40 stroke-border" />
+      <rect x="1" y="1" width="758" height="298" rx="10" className="fill-background stroke-border" />
       {/* 1 reactor */}
       <rect x="30" y="170" width="230" height="80" rx="40" className={box} strokeWidth="2" />
       <text x="145" y="205" textAnchor="middle" className={num}>1</text>
@@ -90,7 +90,7 @@ function LayoutDiagram() {
       <path d="M150 80 L226 80" className="stroke-primary" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
       <path d="M350 80 Q440 80 440 144" className="stroke-primary" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
       <path d="M492 200 L566 200" className="stroke-primary" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
-      <path d="M640 70 L740 70 M640 140 L740 140 M640 230 L740 230" className="stroke-primary" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />
+      {[70, 140, 230].map((y) => <path key={y} d={`M640 ${y} L740 ${y}`} className="stroke-primary" strokeWidth="2" fill="none" markerEnd="url(#arrow)" />)}
       <text x="690" y="62" textAnchor="middle" className="fill-muted-foreground text-[11px]">Light</text>
       <text x="690" y="132" textAnchor="middle" className="fill-muted-foreground text-[11px]">Middle</text>
       <text x="690" y="222" textAnchor="middle" className="fill-muted-foreground text-[11px]">Heavy</text>
@@ -122,7 +122,7 @@ function BrochurePage() {
           <p className="text-sm text-primary">01</p>
           <h2 id="layout" className="font-display mt-1 text-3xl">Plant layout</h2>
           <div className="mt-6 grid gap-8 lg:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
-            <div className="min-w-0 overflow-x-auto"><div className="min-w-[520px]"><LayoutDiagram /></div></div>
+            <div className="min-w-0"><div className="overflow-x-auto rounded-lg"><div className="min-w-[560px]"><LayoutDiagram /></div></div><p className="mt-2 text-xs text-muted-foreground sm:hidden print:hidden">Swipe sideways to see the full layout.</p></div>
             <ol className="min-w-0 space-y-4">
               {UNITS.map((u) => (
                 <li key={u.n} className="grid grid-cols-[2rem_minmax(0,1fr)] gap-3">
