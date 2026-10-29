@@ -13,3 +13,4 @@
 - Keep pyrolysis education in dedicated FAQ and safety routes; reuse Comparison for the interactive trade-off cards.
 - Share the booking slot mapping in a tested browser-safe helper so every booking type reserves its selected slot.
 - Keep the photo-derived plant viewer lazy-loaded behind ClientOnly, with its scene in components/plant; browser-only 3D must not enter SSR and descriptive labels must not imply unconfirmed process functions.
+- Keep plant specs in a shared browser-safe module used by both the home Plant section and the SSR brochure route, so the two never disagree; the brochure diagram is plain SVG so it renders and prints without WebGL.
