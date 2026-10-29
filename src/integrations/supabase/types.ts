@@ -16,6 +16,7 @@ export type Database = {
     Tables: {
       booking_settings: {
         Row: {
+          blocked_dates: string[]
           capacity: number
           days: number[]
           id: number
@@ -23,6 +24,7 @@ export type Database = {
           updated_at: string
         }
         Insert: {
+          blocked_dates?: string[]
           capacity?: number
           days?: number[]
           id?: number
@@ -30,10 +32,32 @@ export type Database = {
           updated_at?: string
         }
         Update: {
+          blocked_dates?: string[]
           capacity?: number
           days?: number[]
           id?: number
           slots?: string[]
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      price_settings: {
+        Row: {
+          list_price: number | null
+          margin: number
+          product: string
+          updated_at: string
+        }
+        Insert: {
+          list_price?: number | null
+          margin?: number
+          product: string
+          updated_at?: string
+        }
+        Update: {
+          list_price?: number | null
+          margin?: number
+          product?: string
           updated_at?: string
         }
         Relationships: []
@@ -50,6 +74,7 @@ export type Database = {
           product: string
           quantity: string
           reference: string
+          status: string
           visit_date: string | null
           visit_slot: string | null
         }
@@ -64,6 +89,7 @@ export type Database = {
           product?: string
           quantity?: string
           reference: string
+          status?: string
           visit_date?: string | null
           visit_slot?: string | null
         }
@@ -78,6 +104,7 @@ export type Database = {
           product?: string
           quantity?: string
           reference?: string
+          status?: string
           visit_date?: string | null
           visit_slot?: string | null
         }
