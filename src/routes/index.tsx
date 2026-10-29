@@ -117,7 +117,7 @@ function Index() {
             <div key={k} className="rounded-xl border bg-card p-5"><p className="text-xs uppercase tracking-widest text-muted-foreground">{k}</p><p className="mt-2 text-lg">{v}</p></div>
           ))}
         </div>
-        <Link to="/brochure" className="mt-6 inline-flex min-h-11 items-center rounded-md border px-4 text-sm hover:text-primary">Layout, process flow, safety standards & specs — open the brochure</Link>
+        <Link to="/brochure" className="mt-8 inline-flex min-h-16 w-full items-center justify-center rounded-lg bg-primary px-8 py-4 text-center text-lg font-medium text-primary-foreground hover:opacity-90 sm:w-auto">Layout, process flow, safety standards & specs — open the brochure</Link>
       </section>
       <Comparison />
       <section className="mx-auto grid max-w-6xl gap-5 border-t px-4 py-12 sm:px-6 md:grid-cols-2">
