@@ -28,7 +28,7 @@ export function Advisor() {
       <form onSubmit={go} className="mt-6 rounded-lg border bg-card p-4 sm:p-6">
         <textarea aria-label="Describe your fuel needs" rows={3} maxLength={1000} value={need} onChange={(e) => setNeed(e.target.value)}
           placeholder="e.g. Running two 500 kVA generators at a construction site, about 4,000 litres a month"
-          className="w-full rounded-md border bg-background p-3" />
+          className="w-full cursor-text rounded-md border bg-background p-3" />
         <Button disabled={busy} type="submit" className="mt-4 h-auto min-h-11 rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground disabled:opacity-60">
           {busy ? "Thinking…" : "Get recommendation"}
         </Button>

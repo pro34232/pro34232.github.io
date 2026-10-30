@@ -84,12 +84,12 @@ function Index() {
         <h2 className="font-display text-3xl">Fuel cost calculator</h2>
         <div className="mt-6 grid gap-4 rounded-xl border bg-card p-6 md:grid-cols-3 md:items-end">
           <label className="text-sm">Product
-            <select value={pid} onChange={(e) => setPid(e.target.value)} className="mt-2 w-full rounded-md border bg-background p-2">
+            <select value={pid} onChange={(e) => setPid(e.target.value)} className="mt-2 w-full cursor-pointer rounded-md border bg-background p-2">
               {PRODUCTS.map((p) => <option key={p.id} value={p.id}>{p.name}</option>)}
             </select>
           </label>
           <label className="text-sm">Quantity ({sel.unit})
-            <input type="number" min={0} value={litres} onChange={(e) => setLitres(Number(e.target.value))} className="mt-2 w-full rounded-md border bg-background p-2" />
+            <input type="number" min={0} value={litres} onChange={(e) => setLitres(Number(e.target.value))} className="mt-2 w-full cursor-text rounded-md border bg-background p-2" />
           </label>
           <div className="min-w-0"><p className="text-sm text-muted-foreground">Estimated total</p><p className="font-display break-words text-3xl text-primary">AED {total.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p></div>
         </div>
