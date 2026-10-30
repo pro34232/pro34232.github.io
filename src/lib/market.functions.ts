@@ -10,14 +10,27 @@ const MMBTU_PER_NM3_SYNGAS = 0.01137; // ~12 MJ/Nm³
 type Quote = { price: number; prev: number; time: number };
 
 async function quote(symbol: string): Promise<Quote> {
-  const r = await fetch(`https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=5d`, {
-    headers: { "User-Agent": "Mozilla/5.0" },
-  });
+  const r = await fetch(
+    `https://query1.finance.yahoo.com/v8/finance/chart/${encodeURIComponent(symbol)}?interval=1d&range=5d`,
+    {
+      headers: { "User-Agent": "Mozilla/5.0" },
+    },
+  );
   if (!r.ok) throw new Error(`quote ${symbol} ${r.status}`);
-  const j = (await r.json()) as { chart: { result: { meta: { regularMarketPrice: number; chartPreviousClose: number; regularMarketTime: number } }[] } };
+  const j = (await r.json()) as {
+    chart: {
+      result: {
+        meta: { regularMarketPrice: number; chartPreviousClose: number; regularMarketTime: number };
+      }[];
+    };
+  };
   const m = j.chart.result[0]?.meta;
   if (!m) throw new Error(`no quote ${symbol}`);
-  return { price: m.regularMarketPrice, prev: m.chartPreviousClose, time: m.regularMarketTime * 1000 };
+  return {
+    price: m.regularMarketPrice,
+    prev: m.chartPreviousClose,
+    time: m.regularMarketTime * 1000,
+  };
 }
 
 export type LivePrice = { id: string; price: number; prev: number; live: boolean };
@@ -25,7 +38,7 @@ export type LivePrice = { id: string; price: number; prev: number; live: boolean
 export const getLivePrices = createServerFn({ method: "GET" }).handler(async () => {
   if (typeof window !== "undefined") {
     try {
-      const response = await fetch(`/market.json?t=${Math.floor(Date.now() / 3600000)}`);
+      const response = await fetch(`/market.json?t=${Math.floor(Date.now() / 86400000)}`);
       if (!response.ok) throw new Error(`market snapshot returned ${response.status}`);
       return (await response.json()) as { prices: LivePrice[]; updated: number };
     } catch {
@@ -49,8 +62,18 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(async () 
   const r2 = (n: number) => Math.round(n * 100) / 100;
   const prices: LivePrice[] = [
     { id: "diesel", price: r2(hoL(ho.price) + 0.9), prev: r2(hoL(ho.prev) + 0.9), live: true },
-    { id: "kerosene", price: r2(hoL(ho.price) * 0.97 + 0.75), prev: r2(hoL(ho.prev) * 0.97 + 0.75), live: true },
-    { id: "lpg", price: r2(brentL(brent.price) * 0.8 + 0.45), prev: r2(brentL(brent.prev) * 0.8 + 0.45), live: true },
+    {
+      id: "kerosene",
+      price: r2(hoL(ho.price) * 0.97 + 0.75),
+      prev: r2(hoL(ho.prev) * 0.97 + 0.75),
+      live: true,
+    },
+    {
+      id: "lpg",
+      price: r2(brentL(brent.price) * 0.8 + 0.45),
+      prev: r2(brentL(brent.prev) * 0.8 + 0.45),
+      live: true,
+    },
     { id: "syngas", price: r2(ngM(ng.price) + 0.5), prev: r2(ngM(ng.prev) + 0.5), live: true },
     { id: "oxygen", price: 1.6, prev: 1.6, live: false },
     { id: "nitrogen", price: 1.2, prev: 1.2, live: false },

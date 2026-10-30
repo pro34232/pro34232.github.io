@@ -2,7 +2,7 @@ name: Update market snapshot
 
 on:
   schedule:
-    - cron: "15 * * * *"
+    - cron: "15 0 * * *"
   workflow_dispatch:
 
 permissions:

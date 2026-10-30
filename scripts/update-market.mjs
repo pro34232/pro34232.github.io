@@ -33,10 +33,30 @@ const brentL = (value) => (value * AED) / L_PER_BBL;
 const market = {
   updated: Math.max(ho.time, ng.time, brent.time),
   prices: [
-    { id: "diesel", price: round(hoL(ho.price) + 0.9), prev: round(hoL(ho.prev) + 0.9), live: true },
-    { id: "kerosene", price: round(hoL(ho.price) * 0.97 + 0.75), prev: round(hoL(ho.prev) * 0.97 + 0.75), live: true },
-    { id: "lpg", price: round(brentL(brent.price) * 0.8 + 0.45), prev: round(brentL(brent.prev) * 0.8 + 0.45), live: true },
-    { id: "syngas", price: round(ngM(ng.price) + 0.5), prev: round(ngM(ng.prev) + 0.5), live: true },
+    {
+      id: "diesel",
+      price: round(hoL(ho.price) + 0.9),
+      prev: round(hoL(ho.prev) + 0.9),
+      live: true,
+    },
+    {
+      id: "kerosene",
+      price: round(hoL(ho.price) * 0.97 + 0.75),
+      prev: round(hoL(ho.prev) * 0.97 + 0.75),
+      live: true,
+    },
+    {
+      id: "lpg",
+      price: round(brentL(brent.price) * 0.8 + 0.45),
+      prev: round(brentL(brent.prev) * 0.8 + 0.45),
+      live: true,
+    },
+    {
+      id: "syngas",
+      price: round(ngM(ng.price) + 0.5),
+      prev: round(ngM(ng.prev) + 0.5),
+      live: true,
+    },
     { id: "oxygen", price: 1.6, prev: 1.6, live: false },
     { id: "nitrogen", price: 1.2, prev: 1.2, live: false },
   ],
