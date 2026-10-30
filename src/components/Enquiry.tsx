@@ -112,7 +112,7 @@ export function Enquiry() {
         <label className="min-w-0 text-sm">Email<Input type="email" className={input} value={f.email} onChange={set("email")} maxLength={255} /></label>
         <label className="min-w-0 text-sm">Phone<Input className={input} value={f.phone} onChange={set("phone")} maxLength={30} /></label>
         <label className="min-w-0 text-sm">Product
-          <select className={input} value={f.product} onChange={set("product")}>
+          <select className={`${input} native-field`} value={f.product} onChange={set("product")}>
             {PRODUCTS.map((p) => <option key={p.id}>{p.name}</option>)}
             <option>Plant visit</option>
           </select>
