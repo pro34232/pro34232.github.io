@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { PRODUCTS, marketPrice } from "./prices";
 
 // USD is pegged to AED at 3.6725.
 const AED = 3.6725;
@@ -22,6 +23,19 @@ async function quote(symbol: string): Promise<Quote> {
 export type LivePrice = { id: string; price: number; prev: number; live: boolean };
 
 export const getLivePrices = createServerFn({ method: "GET" }).handler(async () => {
+  if (typeof window !== "undefined") {
+    const updated = Date.now();
+    return {
+      prices: PRODUCTS.map((product) => ({
+        id: product.id,
+        price: marketPrice(product.base, product.id, updated),
+        prev: marketPrice(product.base, product.id, updated - 86400000),
+        live: false,
+      })),
+      updated,
+    };
+  }
+
   const [ho, ng, brent] = await Promise.all([quote("HO=F"), quote("NG=F"), quote("BZ=F")]);
   const hoL = (v: number) => (v * AED) / L_PER_GAL; // ULSD futures, AED per litre
   const ngM = (v: number) => v * AED * MMBTU_PER_NM3_SYNGAS;
