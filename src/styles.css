@@ -155,10 +155,10 @@ body { font-family: "DM Sans", sans-serif; }
 html { scroll-padding-top: 1.5rem; }
 .plant-canvas canvas { touch-action: none; }
 body { letter-spacing: 0; }
-input, textarea { font-size: 1rem; user-select: text; }
-input:disabled, textarea:disabled { cursor: not-allowed; }
-select { font-size: 1rem; cursor: pointer; }
-input, textarea, select, button { pointer-events: auto; }
+.native-field { appearance: none; cursor: text; font: inherit; user-select: text; }
+.native-field:where(select) { cursor: pointer; }
+.native-field:focus { outline: 2px solid var(--primary); outline-offset: 2px; }
+.native-field:disabled { cursor: not-allowed; }
 @media (max-width: 639px) {
   main > section { padding-left: 1rem; padding-right: 1rem; }
 }
