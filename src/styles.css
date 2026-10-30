@@ -155,7 +155,9 @@ body { font-family: "DM Sans", sans-serif; }
 html { scroll-padding-top: 1.5rem; }
 .plant-canvas canvas { touch-action: none; }
 body { letter-spacing: 0; }
-input, select, textarea { font-size: 1rem; }
+input, textarea { font-size: 1rem; cursor: text; user-select: text; }
+select, button { cursor: pointer; }
+input:disabled, textarea:disabled, select:disabled, button:disabled { cursor: not-allowed; }
 @media (max-width: 639px) {
   main > section { padding-left: 1rem; padding-right: 1rem; }
 }
