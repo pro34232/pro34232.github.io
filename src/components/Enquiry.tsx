@@ -44,7 +44,8 @@ export function Enquiry() {
   const closed = !!(cfg && f.date && !cfg.days.includes(dow(f.date)));
   const fetchSlots = useServerFn(getBookedSlots);
   const send = useServerFn(submitRequest);
-  const set = (k: string) => (e: { target: { value: string } }) => setF({ ...f, [k]: e.target.value });
+  const set = (k: keyof typeof f) => (e: { target: { value: string } }) =>
+    setF((current) => ({ ...current, [k]: e.target.value }));
   const visit = f.type === "Booking";
 
   const loadSlots = (date: string) => {
@@ -68,7 +69,7 @@ export function Enquiry() {
         setStatus({ s: "ok", ref: res.reference, type: f.type });
       } else if (res.reason === "slot") {
         setStatus({ s: "fail", msg: "That time slot was just taken. Please pick another slot and send again." });
-        setF({ ...f, slot: "" });
+        setF((current) => ({ ...current, slot: "" }));
         loadSlots(f.date);
       } else {
         setStatus({ s: "fail", msg: "We couldn't save your request. Please check your details and press Send again." });
@@ -101,7 +102,7 @@ export function Enquiry() {
       <form onSubmit={submit} className="mt-6 grid gap-4 rounded-lg border bg-card p-4 sm:p-6 md:grid-cols-2">
         <div className="flex gap-2 md:col-span-2">
           {["Enquiry", "Booking"].map((t) => (
-            <Button variant="outline" type="button" key={t} onClick={() => setF({ ...f, type: t, date: t === "Booking" && !f.date ? tomorrow() : f.date, slot: "" })}
+            <Button variant="outline" type="button" key={t} onClick={() => setF((current) => ({ ...current, type: t, date: t === "Booking" && !current.date ? tomorrow() : current.date, slot: "" }))}
               className={`min-h-11 border-border rounded-md border px-5 py-2 text-sm ${f.type === t ? "bg-primary text-primary-foreground" : "text-muted-foreground"}`}>{t}</Button>
           ))}
         </div>
@@ -115,7 +116,7 @@ export function Enquiry() {
           </select>
         </label>
         {f.product !== "Plant visit" && <label className="min-w-0 text-sm">Quantity<input className={input} value={f.quantity} onChange={set("quantity")} maxLength={30} /></label>}
-        {f.type === "Booking" && <label className="min-w-0 text-sm">{f.product === "Plant visit" ? "Visit date" : "Delivery / collection date"}<input type="date" min={iso(Date.now() + DAY)} className={input} value={f.date} onChange={(e) => setF({ ...f, date: e.target.value, slot: "" })} /></label>}
+        {f.type === "Booking" && <label className="min-w-0 text-sm">{f.product === "Plant visit" ? "Visit date" : "Delivery / collection date"}<input type="date" min={iso(Date.now() + DAY)} className={input} value={f.date} onChange={(e) => setF((current) => ({ ...current, date: e.target.value, slot: "" }))} /></label>}
         {visit && (
           <div className="min-w-0 text-sm md:col-span-2">
             Time slot
@@ -125,7 +126,7 @@ export function Enquiry() {
                 {cfg.slots.map((s) => {
                   const taken = booked.includes(s);
                   return (
-                    <Button variant="outline" type="button" key={s} disabled={taken || slotsLoading} onClick={() => setF({ ...f, slot: s })}
+                    <Button variant="outline" type="button" key={s} disabled={taken || slotsLoading} onClick={() => setF((current) => ({ ...current, slot: s }))}
                       className={`min-h-11 border-border rounded-md border px-4 py-2 ${f.slot === s ? "bg-primary text-primary-foreground" : ""} ${taken ? "cursor-not-allowed line-through opacity-40" : ""}`}>
                       {s}{taken ? " · full" : ""}
                     </Button>
