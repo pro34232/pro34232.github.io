@@ -155,7 +155,6 @@ body { font-family: "DM Sans", sans-serif; }
 html { scroll-padding-top: 1.5rem; }
 .plant-canvas canvas { touch-action: none; }
 body { letter-spacing: 0; }
-.field-control,
 .native-field {
   appearance: none;
   box-sizing: border-box;
@@ -171,15 +170,10 @@ body { letter-spacing: 0; }
   line-height: 1.4;
   outline: none;
   padding: 0.625rem 0.75rem;
-  pointer-events: auto;
   user-select: text;
 }
-.field-control-textarea { min-height: 6.25rem; resize: vertical; }
 .native-field:where(select) { cursor: pointer; }
-.field-control::placeholder { color: var(--color-muted-foreground); }
-.field-control:focus,
 .native-field:focus { border-color: var(--primary); box-shadow: 0 0 0 2px color-mix(in oklch, var(--primary) 35%, transparent); }
-.field-control:disabled,
 .native-field:disabled { cursor: not-allowed; opacity: 0.5; }
 @media (max-width: 639px) {
   main > section { padding-left: 1rem; padding-right: 1rem; }
