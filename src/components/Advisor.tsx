@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Textarea } from "@/components/ui/textarea";
 import { useState } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { recommendFuel } from "@/lib/advisor.functions";
@@ -26,9 +27,9 @@ export function Advisor() {
       <h2 className="font-display text-3xl">Fuel advisor</h2>
       <p className="mt-2 text-muted-foreground">Describe what you need fuel for and we'll recommend the right Eco Fuel product.</p>
       <form onSubmit={go} className="mt-6 rounded-lg border bg-card p-4 sm:p-6">
-        <textarea aria-label="Describe your fuel needs" rows={3} maxLength={1000} value={need} onChange={(e) => setNeed(e.target.value)}
+        <Textarea aria-label="Describe your fuel needs" rows={3} maxLength={1000} value={need} onChange={(e) => setNeed(e.target.value)}
           placeholder="e.g. Running two 500 kVA generators at a construction site, about 4,000 litres a month"
-          className="w-full cursor-text rounded-md border bg-background p-3" />
+          className="min-h-24 p-3" />
         <Button disabled={busy} type="submit" className="mt-4 h-auto min-h-11 rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground disabled:opacity-60">
           {busy ? "Thinking…" : "Get recommendation"}
         </Button>

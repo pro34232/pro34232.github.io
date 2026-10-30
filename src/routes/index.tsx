@@ -4,6 +4,7 @@ import { Enquiry } from "@/components/Enquiry";
 import { Advisor } from "@/components/Advisor";
 import { SiteHeader } from "@/components/SiteHeader";
 import { Comparison } from "@/components/Comparison";
+import { Input } from "@/components/ui/input";
 import { Link } from "@tanstack/react-router";
 import { PRODUCTS } from "@/lib/prices";
 import { PLANT_SPECS } from "@/lib/plant";
@@ -89,7 +90,7 @@ function Index() {
             </select>
           </label>
           <label className="text-sm">Quantity ({sel.unit})
-            <input type="number" min={0} value={litres} onChange={(e) => setLitres(Number(e.target.value))} className="mt-2 w-full cursor-text rounded-md border bg-background p-2" />
+            <Input type="number" min={0} value={litres} onChange={(e) => setLitres(Number(e.target.value))} className="mt-2" />
           </label>
           <div className="min-w-0"><p className="text-sm text-muted-foreground">Estimated total</p><p className="font-display break-words text-3xl text-primary">AED {total.toLocaleString(undefined, { maximumFractionDigits: 2 })}</p></div>
         </div>

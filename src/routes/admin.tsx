@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
@@ -22,7 +23,7 @@ export const Route = createFileRoute("/admin")({
 
 const DAYS = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
 const HOURS = Array.from({ length: 24 }, (_, h) => `${String(h).padStart(2, "0")}:00`);
-const input = "mt-2 min-w-0 min-h-11 w-full rounded-md border bg-background p-2";
+const input = "mt-2";
 
 function Admin() {
   const [session, setSession] = useState<Session | null>(null);
@@ -67,8 +68,8 @@ function SignIn() {
   return (
     <form onSubmit={go} className="max-w-sm space-y-4 rounded-lg border bg-card p-4 sm:p-6">
       <p className="text-sm text-muted-foreground">{mode === "in" ? "Sign in with your owner account." : "Create your owner account using abeljomy2012@gmail.com."}</p>
-      <label className="block text-sm">Email<input type="email" required className={input} value={email} onChange={(e) => setEmail(e.target.value)} /></label>
-      <label className="block text-sm">Password<input type="password" required minLength={8} className={input} value={pw} onChange={(e) => setPw(e.target.value)} /></label>
+      <label className="block text-sm">Email<Input type="email" required className={input} value={email} onChange={(e) => setEmail(e.target.value)} /></label>
+      <label className="block text-sm">Password<Input type="password" required minLength={8} className={input} value={pw} onChange={(e) => setPw(e.target.value)} /></label>
       {msg && <p className="text-sm text-muted-foreground">{msg}</p>}
       <Button className="w-full rounded-md bg-primary py-2 font-medium text-primary-foreground">{mode === "in" ? "Sign in" : "Create account"}</Button>
       <Button variant="link" type="button" onClick={() => setMode(mode === "in" ? "up" : "in")} className="h-auto min-h-11 w-full whitespace-normal text-sm text-muted-foreground">
@@ -131,7 +132,7 @@ function Owner({ userId }: { userId: string }) {
       </section>
       <section className="rounded-lg border bg-card p-4 sm:p-6">
         <h2 className="font-display text-2xl">Requests per slot</h2>
-        <input type="number" min={1} max={100} value={capacity} onChange={(e) => setCapacity(Math.max(1, Math.min(100, Number(e.target.value) || 1)))} className={`${input} max-w-32`} />
+        <Input type="number" min={1} max={100} value={capacity} onChange={(e) => setCapacity(Math.max(1, Math.min(100, Number(e.target.value) || 1)))} className={`${input} max-w-32`} />
       </section>
       <div className="grid grid-cols-[minmax(0,1fr)_auto] items-center gap-4 sm:flex sm:flex-wrap">
         <Button onClick={save} className="rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground">Save settings</Button>
