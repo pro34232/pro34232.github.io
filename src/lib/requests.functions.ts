@@ -5,8 +5,9 @@ import { requestBookingSlot } from "./booking";
 
 function client() {
   return import("@supabase/supabase-js").then(({ createClient }) => {
-    const key = process.env["SUPABASE_PUBLISHABLE_KEY"]!;
-    return createClient(process.env["SUPABASE_URL"]!, key, {
+    const key = import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] || process.env["SUPABASE_PUBLISHABLE_KEY"]!;
+    const url = import.meta.env["VITE_SUPABASE_URL"] || process.env["SUPABASE_URL"]!;
+    return createClient(url, key, {
       auth: { persistSession: false },
       global: {
         fetch: (input, init) => {
