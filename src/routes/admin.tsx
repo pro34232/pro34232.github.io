@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { createFileRoute } from "@tanstack/react-router";
+import { createFileRoute, Link } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import type { Session } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
@@ -40,7 +40,7 @@ function Shell({ children }: { children: React.ReactNode }) {
   return (
     <main className="min-h-screen bg-background text-foreground">
       <div className="mx-auto max-w-4xl px-4 py-10 sm:px-6">
-        <a href="/" className="text-sm text-muted-foreground">← Back to site</a>
+        <Link to="/" className="text-sm text-muted-foreground">← Back to site</Link>
         <h1 className="font-display mt-4 text-4xl">Owner settings</h1>
         <div className="mt-8">{children}</div>
       </div>

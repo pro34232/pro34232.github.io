@@ -32,3 +32,18 @@ cd <repository-name>
 npm i
 npm run dev
 ```
+
+## GitHub Pages
+
+The `main` branch deploys automatically through
+[`deploy-pages.yml`](./.github/workflows/deploy-pages.yml). In the repository
+settings, set **Pages → Source** to **GitHub Actions**. The project site will
+then be available at:
+
+```text
+https://<github-user>.github.io/eco-fuel-circular-energy/
+```
+
+The Pages build uses the repository name as its Vite base path and copies the
+SPA entry point to `404.html`, so nested routes such as `/faq` and `/safety`
+continue to work when opened directly.
