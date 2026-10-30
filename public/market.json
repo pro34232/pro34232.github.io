@@ -1,0 +1,41 @@
+{
+  "updated": 1793369257000,
+  "prices": [
+    {
+      "id": "diesel",
+      "price": 5.47,
+      "prev": 5.67,
+      "live": true
+    },
+    {
+      "id": "kerosene",
+      "price": 5.19,
+      "prev": 5.37,
+      "live": true
+    },
+    {
+      "id": "lpg",
+      "price": 2.55,
+      "prev": 2.59,
+      "live": true
+    },
+    {
+      "id": "syngas",
+      "price": 0.62,
+      "prev": 0.61,
+      "live": true
+    },
+    {
+      "id": "oxygen",
+      "price": 1.6,
+      "prev": 1.6,
+      "live": false
+    },
+    {
+      "id": "nitrogen",
+      "price": 1.2,
+      "prev": 1.2,
+      "live": false
+    }
+  ]
+}

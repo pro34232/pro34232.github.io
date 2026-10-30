@@ -24,16 +24,22 @@ export type LivePrice = { id: string; price: number; prev: number; live: boolean
 
 export const getLivePrices = createServerFn({ method: "GET" }).handler(async () => {
   if (typeof window !== "undefined") {
-    const updated = Date.now();
-    return {
-      prices: PRODUCTS.map((product) => ({
-        id: product.id,
-        price: marketPrice(product.base, product.id, updated),
-        prev: marketPrice(product.base, product.id, updated - 86400000),
-        live: false,
-      })),
-      updated,
-    };
+    try {
+      const response = await fetch(`/market.json?t=${Math.floor(Date.now() / 3600000)}`);
+      if (!response.ok) throw new Error(`market snapshot returned ${response.status}`);
+      return (await response.json()) as { prices: LivePrice[]; updated: number };
+    } catch {
+      const updated = Date.now();
+      return {
+        prices: PRODUCTS.map((product) => ({
+          id: product.id,
+          price: marketPrice(product.base, product.id, updated),
+          prev: marketPrice(product.base, product.id, updated - 86400000),
+          live: false,
+        })),
+        updated,
+      };
+    }
   }
 
   const [ho, ng, brent] = await Promise.all([quote("HO=F"), quote("NG=F"), quote("BZ=F")]);
