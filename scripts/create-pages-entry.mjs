@@ -5,7 +5,7 @@ const publicDir = ".output/public";
 const assetsDir = join(publicDir, "assets");
 const assets = await readdir(assetsDir);
 const javascript = assets.find((name) => /^index-.*\.js$/.test(name));
-const stylesheet = assets.find((name) => /^styles-.*\.css$/.test(name));
+const stylesheet = assets.find((name) => /^index-.*\.css$/.test(name));
 
 if (!javascript || !stylesheet) {
   throw new Error("Pages build did not produce the client entry assets.");
