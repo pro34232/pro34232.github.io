@@ -22,7 +22,7 @@ export function Advisor() {
   };
 
   return (
-    <section id="advisor" className="mx-auto max-w-6xl px-4 py-12 sm:px-6">
+    <section id="advisor" className="mx-auto max-w-6xl cursor-default px-4 py-12 sm:px-6">
       <h2 className="font-display text-3xl">Fuel advisor</h2>
       <p className="mt-2 text-muted-foreground">Describe what you need fuel for and we'll recommend the right Eco Fuel product.</p>
       <form onSubmit={go} className="mt-6 rounded-lg border bg-card p-4 sm:p-6">

@@ -80,7 +80,7 @@ function Index() {
 
       <Advisor />
 
-      <section id="cost" className="mx-auto max-w-6xl px-6 py-12">
+      <section id="cost" className="mx-auto max-w-6xl cursor-default px-6 py-12">
         <h2 className="font-display text-3xl">Fuel cost calculator</h2>
         <div className="mt-6 grid gap-4 rounded-xl border bg-card p-6 md:grid-cols-3 md:items-end">
           <label className="text-sm">Product
