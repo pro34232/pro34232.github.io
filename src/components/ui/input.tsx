@@ -7,10 +7,7 @@ const Input = React.forwardRef<HTMLInputElement, React.ComponentProps<"input">>(
     return (
       <input
         type={type}
-        className={cn(
-          "field-control",
-          className,
-        )}
+        className={cn("field-control relative z-10", className)}
         ref={ref}
         {...props}
       />

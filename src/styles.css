@@ -171,6 +171,7 @@ body { letter-spacing: 0; }
   line-height: 1.4;
   outline: none;
   padding: 0.625rem 0.75rem;
+  pointer-events: auto;
   user-select: text;
 }
 .field-control-textarea { min-height: 6.25rem; resize: vertical; }

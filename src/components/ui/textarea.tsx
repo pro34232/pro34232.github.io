@@ -6,10 +6,7 @@ const Textarea = React.forwardRef<HTMLTextAreaElement, React.ComponentProps<"tex
   ({ className, ...props }, ref) => {
     return (
       <textarea
-        className={cn(
-          "field-control field-control-textarea",
-          className,
-        )}
+        className={cn("field-control field-control-textarea relative z-10", className)}
         ref={ref}
         {...props}
       />
