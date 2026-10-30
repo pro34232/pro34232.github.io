@@ -1,5 +1,5 @@
 import { Link } from "@tanstack/react-router";
-import { ArrowUpRight, Menu, X } from "lucide-react";
+import { ArrowUpRight, Flame, Menu, Recycle, X } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 
@@ -16,7 +16,10 @@ export function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-white/10 bg-[#101613]/90 backdrop-blur-xl">
       <div className="mx-auto flex max-w-7xl items-center justify-between px-5 py-4 lg:px-8">
         <Link to="/" className="group flex items-center gap-2" onClick={() => setOpen(false)}>
-          <span className="grid size-9 place-items-center rounded-full bg-[#c4f542] text-sm font-bold text-[#101613]">EF</span>
+          <span className="relative grid size-9 place-items-center rounded-full bg-[#c4f542] text-[#101613]" aria-label="EcoFuel circular energy">
+            <Recycle className="size-5 stroke-[2.5]" aria-hidden="true" />
+            <Flame className="absolute -bottom-0.5 -right-0.5 size-3.5 fill-[#101613] stroke-[#c4f542]" aria-hidden="true" />
+          </span>
           <span className="font-display text-xl font-bold tracking-tight text-white">Eco<span className="text-[#c4f542]">Fuel</span></span>
         </Link>
         <nav className={`${open ? "absolute inset-x-4 top-[76px] grid rounded-2xl border border-white/10 bg-[#17201b] p-3 shadow-2xl" : "hidden"} gap-1 lg:static lg:flex lg:items-center lg:rounded-none lg:border-0 lg:bg-transparent lg:p-0 lg:shadow-none`}>
