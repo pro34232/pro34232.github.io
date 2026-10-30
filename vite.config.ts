@@ -6,8 +6,10 @@
 // You can pass additional config via defineConfig({ vite: { ... }, etc... }) if needed.
 import { defineConfig } from "@lovable.dev/vite-tanstack-config";
 
-const repository = process.env.GITHUB_REPOSITORY?.split("/")[1];
-const base = process.env.GITHUB_ACTIONS && repository ? `/${repository}/` : "/";
+const repository = process.env["GITHUB_REPOSITORY"]?.split("/")[1];
+const isUserSite = repository?.endsWith(".github.io");
+const base =
+  process.env["GITHUB_ACTIONS"] && repository && !isUserSite ? `/${repository}/` : "/";
 
 export default defineConfig({
   vite: {
