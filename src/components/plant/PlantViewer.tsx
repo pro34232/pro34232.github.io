@@ -1,4 +1,5 @@
 import { Component, Suspense, useEffect, useRef, useState, type ComponentRef, type ReactNode } from "react";
+import { PCFShadowMap } from "three";
 import { Canvas } from "@react-three/fiber";
 import { Environment, Lightformer, OrbitControls } from "@react-three/drei";
 import { Minus, Plus, RotateCcw, Tags } from "lucide-react";
@@ -53,7 +54,7 @@ export default function PlantViewer() {
     </div>
     <div className="plant-canvas relative h-[360px] sm:h-[480px]" role="img" aria-label="Silver horizontal chamber, three vessels and tall column on a green base">
       <ViewerBoundary>
-        {palette && <Canvas shadows dpr={[1, 1.5]} camera={{ position: [9, 8, 11], fov: 42 }} fallback={<p className="p-6 text-muted-foreground">This device cannot display the 3D model.</p>}>
+        {palette && <Canvas shadows={{ type: PCFShadowMap }} dpr={[1, 1.5]} camera={{ position: [9, 8, 11], fov: 42 }} fallback={<p className="p-6 text-muted-foreground">This device cannot display the 3D model.</p>}>
           <ambientLight intensity={0.8} />
           <directionalLight position={[3, 8, 6]} intensity={2.2} castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-7} shadow-camera-right={7} shadow-camera-top={7} shadow-camera-bottom={-7} />
           <Suspense fallback={null}>

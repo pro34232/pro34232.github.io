@@ -60,7 +60,8 @@ export type BookingSettings = { days: number[]; slots: string[]; capacity: numbe
 
 export const getBookingSettings = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await client();
-  const { data, error } = await sb.from("booking_settings").select("days, slots, capacity").eq("id", 1).single();
-  if (error || !data) throw new Error("Could not load booking settings");
-  return data as BookingSettings;
+  const { data, error } = await sb.from("booking_settings").select("days, slots, capacity").eq("id", 1).limit(1);
+  const settings = data?.[0];
+  if (error || !settings) throw new Error("Could not load booking settings");
+  return settings as BookingSettings;
 });

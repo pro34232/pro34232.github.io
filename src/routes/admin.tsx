@@ -90,8 +90,9 @@ function Owner({ userId }: { userId: string }) {
 
   useEffect(() => {
     supabase.rpc("has_role", { _user_id: userId, _role: "admin" }).then(({ data }) => setIsAdmin(!!data));
-    supabase.from("booking_settings").select("days, slots, capacity").eq("id", 1).single().then(({ data }) => {
-      if (data) { setDays(data.days); setSlots(data.slots); setCapacity(data.capacity); }
+    supabase.from("booking_settings").select("days, slots, capacity").eq("id", 1).limit(1).then(({ data }) => {
+      const settings = data?.[0];
+      if (settings) { setDays(settings.days); setSlots(settings.slots); setCapacity(settings.capacity); }
     });
     supabase.from("requests").select("*").order("created_at", { ascending: false }).limit(100).then(({ data }) => setReqs((data ?? []) as Req[]));
   }, [userId]);
