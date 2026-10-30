@@ -1,1 +1,0 @@
-INSERT INTO public.user_roles(user_id, role) SELECT id, 'admin' FROM auth.users WHERE lower(email)='abeljomy2012@gmail.com' ON CONFLICT DO NOTHING;
