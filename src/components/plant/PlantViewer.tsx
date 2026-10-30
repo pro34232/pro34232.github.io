@@ -1,4 +1,4 @@
-import { Component, Suspense, useEffect, useRef, useState, type ComponentRef, type ReactNode } from "react";
+import { Component, memo, Suspense, useEffect, useRef, useState, type ComponentRef, type ReactNode } from "react";
 import { PCFShadowMap } from "three";
 import { Canvas } from "@react-three/fiber";
 import { Environment, Lightformer, OrbitControls } from "@react-three/drei";
@@ -12,7 +12,7 @@ class ViewerBoundary extends Component<{ children: ReactNode }, { failed: boolea
   override render() { return this.state.failed ? <div className="p-8 text-muted-foreground" role="status">The 3D view is unavailable on this device.</div> : this.props.children; }
 }
 
-export default function PlantViewer() {
+function PlantViewer() {
   const controls = useRef<ComponentRef<typeof OrbitControls>>(null);
   const container = useRef<HTMLDivElement>(null);
   const [labels, setLabels] = useState(true);
@@ -54,11 +54,11 @@ export default function PlantViewer() {
     </div>
     <div className="plant-canvas relative h-[360px] sm:h-[480px]" role="img" aria-label="Silver horizontal chamber, three vessels and tall column on a green base">
       <ViewerBoundary>
-        {palette && <Canvas shadows={{ type: PCFShadowMap }} dpr={[1, 1.5]} camera={{ position: [9, 8, 11], fov: 42 }} fallback={<p className="p-6 text-muted-foreground">This device cannot display the 3D model.</p>}>
+        {palette && <Canvas frameloop="demand" shadows={{ type: PCFShadowMap }} dpr={[1, 1]} camera={{ position: [9, 8, 11], fov: 42 }} fallback={<p className="p-6 text-muted-foreground">This device cannot display the 3D model.</p>}>
           <ambientLight intensity={0.8} />
           <directionalLight position={[3, 8, 6]} intensity={2.2} castShadow shadow-mapSize={[1024, 1024]} shadow-camera-left={-7} shadow-camera-right={7} shadow-camera-top={7} shadow-camera-bottom={-7} />
           <Suspense fallback={null}>
-            <Environment resolution={64}>
+            <Environment resolution={32}>
               <Lightformer intensity={3} color={palette.light} position={[0, 6, 0]} rotation-x={Math.PI / 2} scale={[10, 10, 1]} />
               <Lightformer intensity={2} color={palette.light} position={[-6, 3, 2]} rotation-y={Math.PI / 2} scale={[8, 4, 1]} />
               <Lightformer intensity={1.5} color={palette.light} position={[6, 2, -4]} rotation-y={-Math.PI / 2} scale={[8, 4, 1]} />
@@ -78,3 +78,5 @@ export default function PlantViewer() {
     <p className="mt-3 text-xs text-muted-foreground">Proportions and dimensions are approximate.</p>
   </div>;
 }
+
+export default memo(PlantViewer);
