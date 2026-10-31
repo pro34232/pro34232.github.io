@@ -7,6 +7,20 @@ export type Product = {
   spec: string;
 };
 
+export type MarketPrice = {
+  id: string;
+  price: number;
+  prev: number;
+  live: boolean;
+};
+
+export type MarketSnapshot = {
+  updated: number;
+  prices: MarketPrice[];
+  source: "yahoo";
+  stale?: boolean;
+};
+
 export const PRODUCTS: Product[] = [
   {
     id: "diesel",
@@ -57,12 +71,3 @@ export const PRODUCTS: Product[] = [
     spec: "Purity ≥ 99.9% · Inert blanketing",
   },
 ];
-
-// Deterministic daily fallback: same price for every visitor on a given day.
-export function marketPrice(base: number, seed: string, t = Date.now()) {
-  const day = Math.floor(t / 86400000);
-  let h = 0;
-  for (const c of seed) h = (h * 31 + c.charCodeAt(0)) % 1000;
-  const wave = Math.sin(day / 90 + h) * 0.04 + Math.sin(day / 7 + h * 2) * 0.012;
-  return Math.round(base * (1 + wave) * 100) / 100;
-}

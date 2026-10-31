@@ -9,7 +9,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PRODUCTS } from "@/lib/prices";
 import { PLANT_SPECS } from "@/lib/plant";
-import { getLivePrices, type LivePrice } from "@/lib/market.functions";
+import { getLivePrices } from "@/lib/market.functions";
+import type { MarketSnapshot } from "@/lib/prices";
 
 const PlantViewer = lazy(() => import("@/components/plant/PlantViewer"));
 
@@ -28,14 +29,19 @@ export const Route = createFileRoute("/")({
 });
 
 function Home() {
-  const [live, setLive] = useState<{ prices: LivePrice[]; updated: number } | null>(null);
+  const [live, setLive] = useState<MarketSnapshot | null>(null);
   const [litres, setLitres] = useState(1000);
   const [pid, setPid] = useState("diesel");
   const [refreshing, setRefreshing] = useState(false);
+  const [priceError, setPriceError] = useState(false);
   const refreshPrices = useCallback(async () => {
     setRefreshing(true);
     try {
       setLive(await getLivePrices());
+      setPriceError(false);
+    } catch (error) {
+      console.error("Unable to load market prices", error);
+      setPriceError(true);
     } finally {
       setRefreshing(false);
     }
@@ -94,7 +100,7 @@ function Home() {
       </section>
 
       <section id="prices" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-5"><div><p className="text-xs uppercase tracking-[.2em] text-[#c4f542]">Market intelligence</p><h2 className="mt-3 font-display text-4xl font-semibold tracking-tight sm:text-5xl">Know your benchmark.</h2></div><div className="flex items-end gap-4"><p className="max-w-sm text-right text-sm leading-6 text-white/45">{live ? `Updated ${new Date(live.updated).toLocaleString()} · AED` : "Loading market snapshot…"}<br />Reference pricing for planning, not a retail quote.</p><Button type="button" variant="outline" onClick={() => void refreshPrices()} disabled={refreshing} className="border-white/15 bg-transparent text-white hover:bg-white/10 hover:text-white" aria-label="Refresh market prices"><RefreshCw className={refreshing ? "animate-spin" : ""} /> <span className="hidden sm:inline">{refreshing ? "Refreshing…" : "Refresh prices"}</span></Button></div></div>
+        <div className="flex flex-wrap items-end justify-between gap-5"><div><p className="text-xs uppercase tracking-[.2em] text-[#c4f542]">Market intelligence</p><h2 className="mt-3 font-display text-4xl font-semibold tracking-tight sm:text-5xl">Know your benchmark.</h2></div><div className="flex items-end gap-4"><p className="max-w-sm text-right text-sm leading-6 text-white/45">{live ? `${live.stale ? "Last known · " : "Updated "}${new Date(live.updated).toLocaleString()} · AED` : priceError ? "Market snapshot unavailable" : "Loading market snapshot…"}<br />Reference pricing for planning, not a retail quote.</p><Button type="button" variant="outline" onClick={() => void refreshPrices()} disabled={refreshing} className="border-white/15 bg-transparent text-white hover:bg-white/10 hover:text-white" aria-label="Refresh market prices"><RefreshCw className={refreshing ? "animate-spin" : ""} /> <span className="hidden sm:inline">{refreshing ? "Refreshing…" : "Refresh prices"}</span></Button></div></div>
         <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
           {PRODUCTS.slice(0, 5).map((product, index) => <div key={product.id} className={`rounded-2xl border p-5 ${index === 0 ? "border-[#c4f542]/45 bg-[#c4f542]/10" : "border-white/10 bg-[#151d18]"}`}><div className="flex items-center justify-between text-xs text-white/40"><span>{product.name}</span><CircleGauge className="size-4" /></div><p className="mt-6 font-display text-3xl font-semibold">AED {quote(product.id, product.base).toFixed(2)}</p><p className="mt-1 text-xs text-white/40">per {product.unit}</p><p className="mt-5 text-xs text-[#c4f542]">{live?.prices.find((p) => p.id === product.id)?.live ? "Market linked" : "Indicative benchmark"}</p></div>)}
         </div>

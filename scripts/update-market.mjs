@@ -32,6 +32,7 @@ const brentL = (value) => (value * AED) / L_PER_BBL;
 
 const market = {
   updated: Math.max(ho.time, ng.time, brent.time),
+  source: "yahoo",
   prices: [
     {
       id: "diesel",
