@@ -13,6 +13,9 @@ const base =
 
 export default defineConfig({
   base,
+  define: {
+    "import.meta.env.GITHUB_PAGES": "true",
+  },
   plugins: [react(), tailwindcss(), tsconfigPaths()],
   resolve: {
     alias: {

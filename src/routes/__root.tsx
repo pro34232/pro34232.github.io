@@ -104,7 +104,12 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
   errorComponent: ErrorComponent,
 });
 
-function RootShell({ children }: { children: ReactNode }) {
+export function RootShell({ children }: { children: ReactNode }) {
+  // Pages already provides html/head/body and mounts React inside #root.
+  // Rendering another document shell there makes React's event ancestry loop.
+  if (import.meta.env.GITHUB_PAGES) {
+    return <><HeadContent />{children}</>;
+  }
   return (
     <html lang="en">
       <head>
