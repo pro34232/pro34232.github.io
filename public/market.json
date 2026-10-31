@@ -1,15 +1,15 @@
 {
-  "updated": 1793369257000,
+  "updated": 1793393999000,
   "prices": [
     {
       "id": "diesel",
-      "price": 5.47,
+      "price": 5.44,
       "prev": 5.67,
       "live": true
     },
     {
       "id": "kerosene",
-      "price": 5.19,
+      "price": 5.15,
       "prev": 5.37,
       "live": true
     },
