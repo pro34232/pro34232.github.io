@@ -17,6 +17,10 @@ export const Route = createFileRoute("/")({
     meta: [
       { title: "EcoFuel — Turn waste into usable energy" },
       { name: "description", content: "EcoFuel turns difficult plastic waste into useful fuel products through controlled microwave pyrolysis." },
+      { property: "og:title", content: "EcoFuel — Turn waste into usable energy" },
+      { property: "og:description", content: "EcoFuel turns difficult plastic waste into useful fuel products through controlled microwave pyrolysis." },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
     ],
   }),
   component: Home,

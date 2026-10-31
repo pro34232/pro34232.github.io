@@ -14,3 +14,4 @@
 - Share the booking slot mapping in a tested browser-safe helper so every booking type reserves its selected slot.
 - Keep the photo-derived plant viewer lazy-loaded behind ClientOnly, with its scene in components/plant; browser-only 3D must not enter SSR and descriptive labels must not imply unconfirmed process functions.
 - Keep plant specs in a shared browser-safe module used by both the home Plant section and the SSR brochure route, so the two never disagree; the brochure diagram is plain SVG so it renders and prints without WebGL.
+- GitHub Pages sets import.meta.env.GITHUB_PAGES and renders a fragment shell without html/body or Start scripts because its static document already mounts React inside #root; nesting document elements breaks React event ancestry and freezes inputs.
