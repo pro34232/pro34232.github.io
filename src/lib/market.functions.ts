@@ -38,7 +38,7 @@ export type LivePrice = { id: string; price: number; prev: number; live: boolean
 export const getLivePrices = createServerFn({ method: "GET" }).handler(async () => {
   if (typeof window !== "undefined") {
     try {
-      const response = await fetch(`/market.json?t=${Math.floor(Date.now() / 86400000)}`);
+      const response = await fetch(`/market.json?t=${Date.now()}`);
       if (!response.ok) throw new Error(`market snapshot returned ${response.status}`);
       return (await response.json()) as { prices: LivePrice[]; updated: number };
     } catch {
