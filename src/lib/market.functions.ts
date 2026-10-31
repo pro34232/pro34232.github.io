@@ -50,19 +50,35 @@ async function fetchQuote(symbol: string): Promise<Quote> {
   };
 }
 
-const round = (value: number) => Math.round(value * 100) / 100;
+export type LivePrice = { id: string; price: number; prev: number; live: boolean };
 
-function createSnapshot(ho: Quote, ng: Quote, brent: Quote): MarketSnapshot {
-  const hoPerLitre = (value: number) => (value * AED_PER_USD) / LITRES_PER_GALLON;
-  const ngPerNm3 = (value: number) => value * AED_PER_USD * MMBTU_PER_NM3;
-  const brentPerLitre = (value: number) => (value * AED_PER_USD) / LITRES_PER_BARREL;
-  const prices: MarketPrice[] = [
-    {
-      id: "diesel",
-      price: round(hoPerLitre(ho.price) + 0.9),
-      prev: round(hoPerLitre(ho.previousClose) + 0.9),
-      live: true,
-    },
+export const getLivePrices = createServerFn({ method: "GET" }).handler(async () => {
+  if (typeof window !== "undefined") {
+    try {
+      const response = await fetch(`/market.json?t=${Math.floor(Date.now() / 86400000)}`);
+      if (!response.ok) throw new Error(`market snapshot returned ${response.status}`);
+      return (await response.json()) as { prices: LivePrice[]; updated: number };
+    } catch {
+      const updated = Date.now();
+      return {
+        prices: PRODUCTS.map((product) => ({
+          id: product.id,
+          price: marketPrice(product.base, product.id, updated),
+          prev: marketPrice(product.base, product.id, updated - 86400000),
+          live: false,
+        })),
+        updated,
+      };
+    }
+  }
+
+  const [ho, ng, brent] = await Promise.all([quote("HO=F"), quote("NG=F"), quote("BZ=F")]);
+  const hoL = (v: number) => (v * AED) / L_PER_GAL; // ULSD futures, AED per litre
+  const ngM = (v: number) => v * AED * MMBTU_PER_NM3_SYNGAS;
+  const brentL = (v: number) => (v * AED) / L_PER_BBL; // Brent crude, AED per litre
+  const r2 = (n: number) => Math.round(n * 100) / 100;
+  const prices: LivePrice[] = [
+    { id: "diesel", price: r2(hoL(ho.price) + 0.9), prev: r2(hoL(ho.prev) + 0.9), live: true },
     {
       id: "kerosene",
       price: round(hoPerLitre(ho.price) * 0.97 + 0.75),
