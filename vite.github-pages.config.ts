@@ -4,8 +4,15 @@ import tailwindcss from "@tailwindcss/vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { resolve } from "node:path";
 
+// GitHub project sites are served at /<repo>/, so match the main config's base
+// logic; otherwise /assets/* 404 and the page renders unstyled.
+const repository = process.env["GITHUB_REPOSITORY"]?.split("/")[1];
+const isUserSite = repository?.endsWith(".github.io");
+const base =
+  process.env["GITHUB_ACTIONS"] && repository && !isUserSite ? `/${repository}/` : "/";
+
 export default defineConfig({
-  base: "/",
+  base,
   plugins: [react(), tailwindcss(), tsconfigPaths()],
   resolve: {
     alias: {

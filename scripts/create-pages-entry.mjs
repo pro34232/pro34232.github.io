@@ -11,6 +11,13 @@ if (!javascript || !stylesheet) {
   throw new Error("Pages build did not produce the client entry assets.");
 }
 
+// Match the base path used by vite.github-pages.config.ts so asset URLs
+// resolve on project sites served at /<repo>/.
+const repository = process.env["GITHUB_REPOSITORY"]?.split("/")[1];
+const isUserSite = repository?.endsWith(".github.io");
+const base =
+  process.env["GITHUB_ACTIONS"] && repository && !isUserSite ? `/${repository}/` : "/";
+
 const html = `<!doctype html>
 <html lang="en">
   <head>
@@ -18,8 +25,8 @@ const html = `<!doctype html>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="description" content="Eco Fuel turns waste plastic into useful fuel products." />
     <title>Eco Fuel</title>
-    <script type="module" crossorigin src="/assets/${javascript}"></script>
-    <link rel="stylesheet" crossorigin href="/assets/${stylesheet}" />
+    <script type="module" crossorigin src="${base}assets/${javascript}"></script>
+    <link rel="stylesheet" crossorigin href="${base}assets/${stylesheet}" />
   </head>
   <body>
     <div id="root"></div>
