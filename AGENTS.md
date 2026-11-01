@@ -15,3 +15,5 @@
 - Keep the photo-derived plant viewer lazy-loaded behind ClientOnly, with its scene in components/plant; browser-only 3D must not enter SSR and descriptive labels must not imply unconfirmed process functions.
 - Keep plant specs in a shared browser-safe module used by both the home Plant section and the SSR brochure route, so the two never disagree; the brochure diagram is plain SVG so it renders and prints without WebGL.
 - GitHub Pages sets import.meta.env.GITHUB_PAGES and renders a fragment shell without html/body or Start scripts because its static document already mounts React inside #root; nesting document elements breaks React event ancestry and freezes inputs.
+- GitHub Pages aliases service modules to a public HTTP client; hosted TanStack services retain price fetching, AI secrets and booking validation on the server because static hosting cannot execute them.
+- Public reads and booking RPC calls use a request-local publishable client with server environment URLs; price calculations apply saved price_settings to market benchmarks so owner values govern the advisor and calculator together.
