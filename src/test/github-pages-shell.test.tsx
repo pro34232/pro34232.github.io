@@ -22,7 +22,7 @@ afterEach(() => { cleanup(); vi.unstubAllEnvs(); });
 
 describe("GitHub Pages document shell", () => {
   it("keeps the existing document outside the React mount so inputs accept events", () => {
-    vi.stubEnv("GITHUB_PAGES", true);
+    vi.stubEnv("GITHUB_PAGES", "true");
     const { container } = render(<RootShell><Field /></RootShell>);
     expect(container.querySelector("html,head,body")).toBeNull();
     expect(screen.queryByTestId("start-scripts")).toBeNull();
