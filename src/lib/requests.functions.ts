@@ -1,24 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requestBookingSlot } from "./booking";
+import { publicClient } from './public-client.server';
 
 
 function client() {
-  return import("@supabase/supabase-js").then(({ createClient }) => {
-    const key = import.meta.env["VITE_SUPABASE_PUBLISHABLE_KEY"] || process.env["SUPABASE_PUBLISHABLE_KEY"]!;
-    const url = import.meta.env["VITE_SUPABASE_URL"] || process.env["SUPABASE_URL"]!;
-    return createClient(url, key, {
-      auth: { persistSession: false },
-      global: {
-        fetch: (input, init) => {
-          const h = new Headers(init?.headers);
-          if (key.startsWith("sb_") && h.get("Authorization") === `Bearer ${key}`) h.delete("Authorization");
-          h.set("apikey", key);
-          return fetch(input, { ...init, headers: h });
-        },
-      },
-    });
-  });
+  return publicClient();
 }
 
 export const getBookedSlots = createServerFn({ method: "GET" })
@@ -30,7 +17,7 @@ export const getBookedSlots = createServerFn({ method: "GET" })
     return (rows ?? []) as string[];
   });
 
-const schema = z.object({
+export const requestSchema = z.object({
   type: z.enum(["Enquiry", "Booking"]),
   name: z.string().trim().min(1).max(100),
   email: z.string().trim().email().max(255),
@@ -40,10 +27,14 @@ const schema = z.object({
   date: z.string().max(20),
   slot: z.string().max(10),
   message: z.string().trim().max(1000),
+}).superRefine((data, ctx) => {
+  if (data.type === 'Booking' && (!/^\d{4}-\d{2}-\d{2}$/.test(data.date) || !/^\d{2}:00$/.test(data.slot))) {
+    ctx.addIssue({ code: z.ZodIssueCode.custom, message: 'Please choose a booking date and hourly slot' });
+  }
 });
 
 export const submitRequest = createServerFn({ method: "POST" })
-  .inputValidator((d: z.input<typeof schema>) => schema.parse(d))
+  .inputValidator((d: z.input<typeof requestSchema>) => requestSchema.parse(d))
   .handler(async ({ data }) => {
     if (data.type === "Booking" && !data.slot) return { ok: false as const, reason: "slot" };
     const sb = await client();
@@ -56,11 +47,11 @@ export const submitRequest = createServerFn({ method: "POST" })
     return { ok: true as const, reference: ref as unknown as string };
   });
 
-export type BookingSettings = { days: number[]; slots: string[]; capacity: number };
+export type BookingSettings = { days: number[]; slots: string[]; capacity: number; blocked_dates: string[] };
 
 export const getBookingSettings = createServerFn({ method: "GET" }).handler(async () => {
   const sb = await client();
-  const { data, error } = await sb.from("booking_settings").select("days, slots, capacity").eq("id", 1).limit(1);
+  const { data, error } = await sb.from("booking_settings").select("days, slots, capacity, blocked_dates").eq("id", 1).limit(1);
   const settings = data?.[0];
   if (error || !settings) throw new Error("Could not load booking settings");
   return settings as BookingSettings;
