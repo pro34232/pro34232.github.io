@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { PRODUCTS, type MarketPrice, type MarketSnapshot } from "./prices";
+import { applyPriceSettings } from './market';
+import { publicClient } from './public-client.server';
 
 const AED_PER_USD = 3.6725;
 const LITRES_PER_GALLON = 3.78541;
@@ -36,9 +38,9 @@ async function fetchQuote(symbol: string): Promise<Quote> {
   const meta = data.chart?.result?.[0]?.meta;
   if (
     !meta ||
-    !Number.isFinite(meta.regularMarketPrice) ||
-    !Number.isFinite(meta.chartPreviousClose) ||
-    !Number.isFinite(meta.regularMarketTime)
+    typeof meta.regularMarketPrice !== 'number' || !Number.isFinite(meta.regularMarketPrice) ||
+    typeof meta.chartPreviousClose !== 'number' || !Number.isFinite(meta.chartPreviousClose) ||
+    typeof meta.regularMarketTime !== 'number' || !Number.isFinite(meta.regularMarketTime)
   ) {
     throw new Error(`quote ${symbol} returned invalid data`);
   }
@@ -95,12 +97,13 @@ function createSnapshot(ho: Quote, ng: Quote, brent: Quote): MarketSnapshot {
 function isSnapshot(value: unknown): value is MarketSnapshot {
   if (!value || typeof value !== "object") return false;
   const snapshot = value as Partial<MarketSnapshot>;
+  const prices = snapshot.prices;
   return (
     Number.isFinite(snapshot.updated) &&
     snapshot.source === "yahoo" &&
-    Array.isArray(snapshot.prices) &&
+    Array.isArray(prices) &&
     PRODUCTS.every((product) =>
-      snapshot.prices.some(
+      prices.some(
         (price) =>
           price.id === product.id && Number.isFinite(price.price) && Number.isFinite(price.prev),
       ),
@@ -120,28 +123,17 @@ function readCachedSnapshot(): MarketSnapshot | null {
 
 export const getLivePrices = createServerFn({ method: "GET" }).handler(
   async (): Promise<MarketSnapshot> => {
-    if (typeof window !== "undefined") {
-      try {
-        const response = await fetch(`/market.json?t=${Date.now()}`, {
-          cache: "no-store",
-        });
-        if (!response.ok) throw new Error(`market snapshot returned ${response.status}`);
-        const snapshot: unknown = await response.json();
-        if (!isSnapshot(snapshot)) throw new Error("market snapshot returned invalid data");
-        localStorage.setItem(SNAPSHOT_KEY, JSON.stringify(snapshot));
-        return snapshot;
-      } catch (error) {
-        const cached = readCachedSnapshot();
-        if (cached) return cached;
-        throw error;
-      }
+    const { data: settings, error } = await publicClient().from('price_settings').select('product, margin, list_price');
+    if (error) throw new Error('Could not load product prices');
+    let snapshot: MarketSnapshot;
+    try {
+      const [ho, ng, brent] = await Promise.all([fetchQuote('HO=F'), fetchQuote('NG=F'), fetchQuote('BZ=F')]);
+      snapshot = createSnapshot(ho, ng, brent);
+    } catch {
+      const { default: saved } = await import('../../public/market.json');
+      if (!isSnapshot(saved)) throw new Error('Market data unavailable');
+      snapshot = { ...saved, stale: true };
     }
-
-    const [ho, ng, brent] = await Promise.all([
-      fetchQuote("HO=F"),
-      fetchQuote("NG=F"),
-      fetchQuote("BZ=F"),
-    ]);
-    return createSnapshot(ho, ng, brent);
+    return applyPriceSettings(snapshot, settings ?? []);
   },
 );

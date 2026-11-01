@@ -27,8 +27,8 @@ const DAY = 86400000;
 const iso = (t: number) => new Date(t).toISOString().slice(0, 10);
 const dow = (d: string) => new Date(d + "T00:00:00Z").getUTCDay();
 const DAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
-const firstOpen = (days: number[]) => {
-  for (let i = 1; i <= 14; i++) { const d = iso(Date.now() + i * DAY); if (days.includes(dow(d))) return d; }
+const firstOpen = (days: number[], blocked: string[] = []) => {
+  for (let i = 1; i <= 366; i++) { const d = iso(Date.now() + i * DAY); if (days.includes(dow(d)) && !blocked.includes(d)) return d; }
   return iso(Date.now() + DAY);
 };
 type Status = { s: "idle" } | { s: "sending" } | { s: "ok"; ref: string; type: string } | { s: "fail"; msg: string };
@@ -39,11 +39,12 @@ export function Enquiry() {
   const [status, setStatus] = useState<Status>({ s: "idle" });
   const [booked, setBooked] = useState<string[]>([]);
   const [slotsLoading, setSlotsLoading] = useState(false);
+  const [slotsError, setSlotsError] = useState(false);
   const [cfg, setCfg] = useState<BookingSettings | null>(null);
   const loadCfg = useServerFn(getBookingSettings);
   useEffect(() => { loadCfg().then(setCfg).catch(() => setCfg(null)); }, []);
-  const tomorrow = () => firstOpen(cfg?.days ?? [0, 1, 2, 3, 4, 5, 6]);
-  const closed = !!(cfg && f.date && !cfg.days.includes(dow(f.date)));
+  const tomorrow = () => firstOpen(cfg?.days ?? [], cfg?.blocked_dates ?? []);
+  const closed = !!(cfg && f.date && (!cfg.days.includes(dow(f.date)) || cfg.blocked_dates.includes(f.date)));
   const fetchSlots = useServerFn(getBookedSlots);
   const send = useServerFn(submitRequest);
   const set = (k: keyof typeof f) => (e: { target: { value: string } }) =>
@@ -52,7 +53,9 @@ export function Enquiry() {
 
   const loadSlots = (date: string) => {
     setSlotsLoading(true);
-    fetchSlots({ data: { date } }).then(setBooked).catch(() => setBooked([])).finally(() => setSlotsLoading(false));
+    setSlotsError(false);
+    setF(current => ({ ...current, slot: '' }));
+    fetchSlots({ data: { date } }).then(setBooked).catch(() => { setBooked([]); setSlotsError(true); }).finally(() => setSlotsLoading(false));
   };
   useEffect(() => { if (visit && f.date) loadSlots(f.date); }, [visit, f.date]);
 
@@ -62,6 +65,7 @@ export function Enquiry() {
     if (!r.success) return setErr(r.error.issues[0]?.message ?? "Invalid input");
     if (f.type === "Booking" && !f.date) return setErr("Please choose a date");
     if (closed) return setErr("We're closed that day — please choose another date");
+    if (visit && (!cfg || slotsLoading || slotsError)) return setErr('Available times could not be confirmed. Please choose the date again.');
     if (visit && !f.slot) return setErr("Please choose a time slot");
     setErr("");
     setStatus({ s: "sending" });
@@ -123,7 +127,7 @@ export function Enquiry() {
           <div className="min-w-0 text-sm md:col-span-2">
             Time slot
             {cfg && <span className="ml-2 text-xs text-muted-foreground">Open {cfg.days.map((d) => DAY_NAMES[d]).join(", ")}</span>}
-            {!f.date ? <p className="mt-2 text-muted-foreground">Choose a date to see available times.</p> : closed ? <p className="mt-2 text-destructive">Closed on {DAY_NAMES[dow(f.date)]}s — please pick another date.</p> : !cfg ? <p className="mt-2 text-muted-foreground">Loading times…</p> : (
+            {!f.date ? <p className="mt-2 text-muted-foreground">Choose a date to see available times.</p> : closed ? <p className="mt-2 text-destructive">Bookings are closed on this date — please pick another date.</p> : !cfg ? <p className="mt-2 text-destructive">Booking settings unavailable. Please refresh the page.</p> : slotsError ? <p className="mt-2 text-destructive">Could not check availability. <Button type="button" variant="link" onClick={() => loadSlots(f.date)}>Retry</Button></p> : (
               <div className="mt-2 flex flex-wrap gap-2">
                 {cfg.slots.map((s) => {
                   const taken = booked.includes(s);
@@ -141,7 +145,7 @@ export function Enquiry() {
         <label className="min-w-0 text-sm md:col-span-2">Message<Textarea rows={4} className={input} value={f.message} onChange={set("message")} maxLength={1000} /></label>
         {err && <p className="text-sm text-destructive md:col-span-2">{err}</p>}
         {status.s === "fail" && <p role="alert" className="rounded-md border border-destructive p-3 text-sm text-destructive md:col-span-2">✕ Not sent. {status.msg} If it keeps failing, email us directly at {CONTACT_EMAIL}.</p>}
-        <Button disabled={status.s === "sending"} type="submit" className="h-auto min-h-11 rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground disabled:opacity-60 md:col-span-2 md:justify-self-start">
+        <Button disabled={status.s === "sending" || (visit && (!cfg || slotsLoading || slotsError || closed))} type="submit" className="h-auto min-h-11 rounded-md bg-primary px-6 py-3 font-medium text-primary-foreground disabled:opacity-60 md:col-span-2 md:justify-self-start">
           {status.s === "sending" ? "Sending…" : status.s === "fail" ? `Try again` : `Send ${f.type.toLowerCase()}`}
         </Button>
         <p className="text-xs text-muted-foreground md:col-span-2">{status.s === "sending" ? "Delivering your request to Eco Fuel…" : "Once Eco Fuel receives your request you'll see a confirmation with a booking reference here."}</p>

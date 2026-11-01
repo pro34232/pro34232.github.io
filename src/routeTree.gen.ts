@@ -14,6 +14,7 @@ import { Route as AdminRouteImport } from './routes/admin'
 import { Route as BrochureRouteImport } from './routes/brochure'
 import { Route as FaqRouteImport } from './routes/faq'
 import { Route as SafetyRouteImport } from './routes/safety'
+import { Route as ApiPublicServicesRouteImport } from './routes/api.public.services'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,6 +41,11 @@ const SafetyRoute = SafetyRouteImport.update({
   path: '/safety',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicServicesRoute = ApiPublicServicesRouteImport.update({
+  id: '/api/public/services',
+  path: '/api/public/services',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/brochure': typeof BrochureRoute
   '/faq': typeof FaqRoute
   '/safety': typeof SafetyRoute
+  '/api/public/services': typeof ApiPublicServicesRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/brochure': typeof BrochureRoute
   '/faq': typeof FaqRoute
   '/safety': typeof SafetyRoute
+  '/api/public/services': typeof ApiPublicServicesRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,22 @@ export interface FileRoutesById {
   '/brochure': typeof BrochureRoute
   '/faq': typeof FaqRoute
   '/safety': typeof SafetyRoute
+  '/api/public/services': typeof ApiPublicServicesRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/admin' | '/brochure' | '/faq' | '/safety'
+  fullPaths:
+    '/' | '/admin' | '/brochure' | '/faq' | '/safety' | '/api/public/services'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/admin' | '/brochure' | '/faq' | '/safety'
-  id: '__root__' | '/' | '/admin' | '/brochure' | '/faq' | '/safety'
+  to: '/' | '/admin' | '/brochure' | '/faq' | '/safety' | '/api/public/services'
+  id:
+    | '__root__'
+    | '/'
+    | '/admin'
+    | '/brochure'
+    | '/faq'
+    | '/safety'
+    | '/api/public/services'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +94,7 @@ export interface RootRouteChildren {
   BrochureRoute: typeof BrochureRoute
   FaqRoute: typeof FaqRoute
   SafetyRoute: typeof SafetyRoute
+  ApiPublicServicesRoute: typeof ApiPublicServicesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -116,6 +134,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof SafetyRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/services': {
+      id: '/api/public/services'
+      path: '/api/public/services'
+      fullPath: '/api/public/services'
+      preLoaderRoute: typeof ApiPublicServicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -125,6 +150,7 @@ const rootRouteChildren: RootRouteChildren = {
   BrochureRoute: BrochureRoute,
   FaqRoute: FaqRoute,
   SafetyRoute: SafetyRoute,
+  ApiPublicServicesRoute: ApiPublicServicesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

@@ -19,6 +19,9 @@ export default defineConfig({
   plugins: [react(), tailwindcss(), tsconfigPaths()],
   resolve: {
     alias: {
+      '@/lib/market.functions': resolve('src/lib/pages-services.ts'),
+      '@/lib/requests.functions': resolve('src/lib/pages-services.ts'),
+      '@/lib/advisor.functions': resolve('src/lib/pages-services.ts'),
       "@tanstack/react-start": resolve("src/lib/github-pages-start.ts"),
     },
   },
