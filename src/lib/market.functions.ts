@@ -143,38 +143,6 @@ async function readDbCache(): Promise<MarketSnapshot | null> {
   }
 }
 
-function serviceClient() {
-  const url = process.env['SUPABASE_URL'];
-  const key = process.env['SUPABASE_SERVICE_ROLE_KEY'];
-  if (!url || !key) return null;
-  return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
-}
-
-async function persistSnapshot(snapshot: MarketSnapshot): Promise<void> {
-  const sb = serviceClient();
-  if (!sb) return;
-  try {
-    await sb.from('market_cache').upsert(
-      { id: 1, snapshot, updated_at: new Date().toISOString() },
-      { onConflict: 'id' },
-    );
-  } catch {
-    // Best-effort — the cache is a fallback, not a primary path.
-  }
-}
-
-async function readDbCache(): Promise<MarketSnapshot | null> {
-  const sb = serviceClient();
-  if (!sb) return null;
-  try {
-    const { data } = await sb.from('market_cache').select('snapshot').eq('id', 1).maybeSingle();
-    const cached = data?.snapshot as unknown;
-    return isSnapshot(cached) ? { ...cached, stale: true } : null;
-  } catch {
-    return null;
-  }
-}
-
 export const getLivePrices = createServerFn({ method: "GET" }).handler(
   async (): Promise<MarketSnapshot> => {
     const { data: settings, error } = await publicClient().from('price_settings').select('product, margin, list_price');
