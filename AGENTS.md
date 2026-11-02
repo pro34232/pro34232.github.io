@@ -16,4 +16,5 @@
 - Keep plant specs in a shared browser-safe module used by both the home Plant section and the SSR brochure route, so the two never disagree; the brochure diagram is plain SVG so it renders and prints without WebGL.
 - GitHub Pages sets import.meta.env.GITHUB_PAGES and renders a fragment shell without html/body or Start scripts because its static document already mounts React inside #root; nesting document elements breaks React event ancestry and freezes inputs.
 - GitHub Pages aliases service modules to a public HTTP client; hosted TanStack services retain price fetching, AI secrets and booking validation on the server because static hosting cannot execute them.
+- Keep request validation schemas in browser-safe modules separate from aliased server-function modules so GitHub Pages and hosted handlers resolve the same validation rules.
 - Public reads and booking RPC calls use a request-local publishable client with server environment URLs; price calculations apply saved price_settings to market benchmarks so owner values govern the advisor and calculator together.

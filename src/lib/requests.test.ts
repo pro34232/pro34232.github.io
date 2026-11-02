@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { requestSchema } from './requests.functions';
+import { requestSchema } from './request-schema';
 const input = { type: 'Booking', name: 'Visitor', email: 'visitor@example.com', phone: '', product: 'Diesel', quantity: '100', date: '2026-11-02', slot: '10:00', message: '' };
 describe('Booking validation', () => {
   it('requires a date for bookings', () => { expect(requestSchema.safeParse({ ...input, date: '' }).success).toBe(false); });
