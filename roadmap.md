@@ -1,8 +1,10 @@
 # Roadmap
-- [ ] Connect prices to saved owner price settings and reliable market responses
-- [ ] Complete hosted fuel advisor and GitHub Pages service connection
-- [ ] Validate booking input, availability and saved requests end to end
-- [ ] Resolve current compilation errors and run regression tests
+- [x] Connect prices to saved owner price settings and reliable market responses
+- [x] Complete hosted fuel advisor and GitHub Pages service connection code
+- [ ] Verify GitHub Pages against hosted services — blocked: this remixed app must be published and Pages redeployed
+- [x] Validate booking input, availability and saved requests end to end; remove verification booking
+- [x] Resolve current compilation errors and run regression tests (10 passed)
+- [ ] Verify request visibility in Owner page on this remix — blocked: no owner account exists yet
 - [x] Add a labelled spin-and-zoom plant model based on the uploaded photos and verify interaction
 - [x] Owner-only settings page (/admin): booking days, hourly slots, capacity per slot
 - [ ] Email each request to owner — blocked: needs a verified email domain

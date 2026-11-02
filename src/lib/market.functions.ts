@@ -1,4 +1,5 @@
 import { createServerFn } from "@tanstack/react-start";
+import { createClient } from "@supabase/supabase-js";
 import { PRODUCTS, type MarketPrice, type MarketSnapshot } from "./prices";
 import { applyPriceSettings } from './market';
 import { publicClient } from './public-client.server';
@@ -7,7 +8,6 @@ const AED_PER_USD = 3.6725;
 const LITRES_PER_GALLON = 3.78541;
 const LITRES_PER_BARREL = 158.987;
 const MMBTU_PER_NM3 = 0.01137;
-const SNAPSHOT_KEY = "ecofuel-market-snapshot";
 
 type Quote = {
   price: number;
@@ -111,10 +111,32 @@ function isSnapshot(value: unknown): value is MarketSnapshot {
   );
 }
 
-function readCachedSnapshot(): MarketSnapshot | null {
-  if (typeof localStorage === "undefined") return null;
+function serviceClient() {
+  const url = process.env['SUPABASE_URL'];
+  const key = process.env['SUPABASE_SERVICE_ROLE_KEY'];
+  if (!url || !key) return null;
+  return createClient(url, key, { auth: { persistSession: false, autoRefreshToken: false } });
+}
+
+async function persistSnapshot(snapshot: MarketSnapshot): Promise<void> {
+  const sb = serviceClient();
+  if (!sb) return;
   try {
-    const cached: unknown = JSON.parse(localStorage.getItem(SNAPSHOT_KEY) ?? "null");
+    await sb.from('market_cache').upsert(
+      { id: 1, snapshot, updated_at: new Date().toISOString() },
+      { onConflict: 'id' },
+    );
+  } catch {
+    // Best-effort — the cache is a fallback, not a primary path.
+  }
+}
+
+async function readDbCache(): Promise<MarketSnapshot | null> {
+  const sb = serviceClient();
+  if (!sb) return null;
+  try {
+    const { data } = await sb.from('market_cache').select('snapshot').eq('id', 1).maybeSingle();
+    const cached = data?.snapshot as unknown;
     return isSnapshot(cached) ? { ...cached, stale: true } : null;
   } catch {
     return null;
@@ -126,14 +148,22 @@ export const getLivePrices = createServerFn({ method: "GET" }).handler(
     const { data: settings, error } = await publicClient().from('price_settings').select('product, margin, list_price');
     if (error) throw new Error('Could not load product prices');
     let snapshot: MarketSnapshot;
+    let live = false;
     try {
       const [ho, ng, brent] = await Promise.all([fetchQuote('HO=F'), fetchQuote('NG=F'), fetchQuote('BZ=F')]);
       snapshot = createSnapshot(ho, ng, brent);
+      live = true;
     } catch {
-      const { default: saved } = await import('../../public/market.json');
-      if (!isSnapshot(saved)) throw new Error('Market data unavailable');
-      snapshot = { ...saved, stale: true };
+      const dbCache = await readDbCache();
+      if (dbCache) {
+        snapshot = dbCache;
+      } else {
+        const { default: saved } = await import('../../public/market.json');
+        if (!isSnapshot(saved)) throw new Error('Market data unavailable');
+        snapshot = { ...saved, stale: true };
+      }
     }
+    if (live) void persistSnapshot(snapshot);
     return applyPriceSettings(snapshot, settings ?? []);
   },
 );
