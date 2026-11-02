@@ -1,7 +1,8 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { z } from 'zod';
 import { getLivePrices } from '@/lib/market.functions';
-import { getBookingSettings, getBookedSlots, submitRequest, requestSchema } from '@/lib/requests.functions';
+import { getBookingSettings, getBookedSlots, submitRequest } from '@/lib/requests.functions';
+import { requestSchema } from '@/lib/request-schema';
 import { recommendFuel } from '@/lib/advisor.functions';
 
 const allowed = new Set(['https://pro34232.github.io', 'https://eco-fuel-circular-energy.lovable.app', 'http://localhost:8080']);
