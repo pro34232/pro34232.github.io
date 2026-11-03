@@ -28,5 +28,11 @@ export default defineConfig({
   build: {
     outDir: ".output/public",
     emptyOutDir: true,
+    // Build straight from the script entry. A root index.html makes the hosted
+    // Lovable publish serve that raw file, whose /src/*.tsx script returns HTML
+    // and the page stays blank. create-pages-entry.mjs writes the Pages HTML.
+    rollupOptions: {
+      input: { index: resolve("src/github-pages.tsx") },
+    },
   },
 });
