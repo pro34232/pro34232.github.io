@@ -18,3 +18,4 @@
 - GitHub Pages aliases service modules to a public HTTP client; hosted TanStack services retain price fetching, AI secrets and booking validation on the server because static hosting cannot execute them.
 - Keep request validation schemas in browser-safe modules separate from aliased server-function modules so GitHub Pages and hosted handlers resolve the same validation rules.
 - Public reads and booking RPC calls use a request-local publishable client with server environment URLs; price calculations apply saved price_settings to market benchmarks so owner values govern the advisor and calculator together.
+- Keep .env (publishable backend values only) tracked in git and no index.html at the project root: published builds come from git, so an ignored .env leaves the browser without backend config, and a root index.html makes hosting serve a raw Vite document; the Pages build uses src/github-pages.tsx as its entry instead.
