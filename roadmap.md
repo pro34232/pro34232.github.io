@@ -1,7 +1,7 @@
 # Roadmap
 - [x] Connect prices to saved owner price settings and reliable market responses
 - [x] Complete hosted fuel advisor and GitHub Pages service connection code
-- [ ] Verify GitHub Pages against hosted services — blocked: this remixed app must be published and Pages redeployed
+- [x] Publish latest hosted fix and verify prices, advisor and booking on both Lovable and GitHub Pages; remove verification bookings
 - [x] Validate booking input, availability and saved requests end to end; remove verification booking
 - [x] Resolve current compilation errors and run regression tests (10 passed)
 - [ ] Verify request visibility in Owner page on this remix — blocked: no owner account exists yet
