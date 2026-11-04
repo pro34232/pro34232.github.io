@@ -1,3 +1,5 @@
+import uaeDiesel from './uae-diesel.json';
+
 export type Product = {
   id: string;
   name: string;
@@ -12,6 +14,8 @@ export type MarketPrice = {
   price: number;
   prev: number;
   live: boolean;
+  label?: string;
+  sourceUrl?: string;
 };
 
 export type MarketSnapshot = {
@@ -26,7 +30,7 @@ export const PRODUCTS: Product[] = [
     id: "diesel",
     name: "Diesel",
     unit: "litre",
-    base: 3.05,
+    base: uaeDiesel.price,
     grade: "EN 590 equivalent",
     spec: "Cetane 48–52 · Sulfur < 50 ppm",
   },
