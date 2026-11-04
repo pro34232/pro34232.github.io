@@ -1,4 +1,6 @@
-import { mkdir, writeFile } from "node:fs/promises";
+import { mkdir, readFile, writeFile } from "node:fs/promises";
+
+const uaeDiesel = JSON.parse(await readFile(new URL('../src/lib/uae-diesel.json', import.meta.url), 'utf8'));
 
 const AED = 3.6725;
 const L_PER_GAL = 3.78541;
@@ -36,9 +38,11 @@ const market = {
   prices: [
     {
       id: "diesel",
-      price: round(hoL(ho.price) + 0.9),
-      prev: round(hoL(ho.prev) + 0.9),
-      live: true,
+      price: uaeDiesel.price,
+      prev: uaeDiesel.previousPrice,
+      live: false,
+      label: `${Date.now() >= Date.parse(uaeDiesel.validUntil) ? 'Last published UAE price' : 'UAE retail price'} · ${uaeDiesel.month}`,
+      sourceUrl: uaeDiesel.sourceUrl,
     },
     {
       id: "kerosene",
