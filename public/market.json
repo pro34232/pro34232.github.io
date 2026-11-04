@@ -4,9 +4,11 @@
   "prices": [
     {
       "id": "diesel",
-      "price": 5.31,
-      "prev": 5.55,
-      "live": true
+      "price": 4.75,
+      "prev": 4.8,
+      "live": false,
+      "label": "UAE retail price \u00b7 November 2026",
+      "sourceUrl": "https://www.wam.ae/en/article/17i2n96-uae-fuel-prices-for-november-2026-announced"
     },
     {
       "id": "kerosene",

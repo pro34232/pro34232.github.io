@@ -3,6 +3,7 @@ import { createClient } from "@supabase/supabase-js";
 import { PRODUCTS, type MarketPrice, type MarketSnapshot } from "./prices";
 import { applyPriceSettings } from './market';
 import { publicClient } from './public-client.server';
+import uaeDiesel from './uae-diesel.json';
 
 const AED_PER_USD = 3.6725;
 const LITRES_PER_GALLON = 3.78541;
@@ -61,9 +62,9 @@ function createSnapshot(ho: Quote, ng: Quote, brent: Quote): MarketSnapshot {
   const prices: MarketPrice[] = [
     {
       id: "diesel",
-      price: round(hoPerLitre(ho.price) + 0.9),
-      prev: round(hoPerLitre(ho.previousClose) + 0.9),
-      live: true,
+      price: uaeDiesel.price,
+      prev: uaeDiesel.previousPrice,
+      live: false,
     },
     {
       id: "kerosene",
