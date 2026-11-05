@@ -1,4 +1,5 @@
 # Roadmap
+- [ ] Research published UAE web prices for every product and show only verified, correctly labelled references
 - [x] Connect prices to saved owner price settings and reliable market responses
 - [x] Complete hosted fuel advisor and GitHub Pages service connection code
 - [x] Publish latest hosted fix and verify prices, advisor and booking on both Lovable and GitHub Pages; remove verification bookings
