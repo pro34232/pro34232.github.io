@@ -1,5 +1,5 @@
 {
-  "updated": 1793773009000,
+  "updated": 1793860810000,
   "source": "yahoo",
   "prices": [
     {
@@ -7,19 +7,19 @@
       "price": 4.75,
       "prev": 4.8,
       "live": false,
-      "label": "UAE retail price \u00b7 November 2026",
+      "label": "UAE retail price · November 2026",
       "sourceUrl": "https://www.wam.ae/en/article/17i2n96-uae-fuel-prices-for-november-2026-announced"
     },
     {
       "id": "kerosene",
-      "price": 5.03,
-      "prev": 5.26,
+      "price": 4.66,
+      "prev": 4.91,
       "live": true
     },
     {
       "id": "lpg",
-      "price": 2.37,
-      "prev": 2.62,
+      "price": 2.19,
+      "prev": 2.39,
       "live": true
     },
     {
