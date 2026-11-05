@@ -1,44 +1,50 @@
 {
-  "updated": 1793773009000,
-  "source": "yahoo",
+  "source": "uae",
+  "updated": 1793491200000,
+  "stale": false,
   "prices": [
     {
       "id": "diesel",
       "price": 4.75,
       "prev": 4.8,
       "live": false,
-      "label": "UAE retail price \u00b7 November 2026",
+      "label": "UAE retail price · November 2026",
       "sourceUrl": "https://www.wam.ae/en/article/17i2n96-uae-fuel-prices-for-november-2026-announced"
     },
     {
       "id": "kerosene",
-      "price": 5.03,
-      "prev": 5.26,
-      "live": true
-    },
-    {
-      "id": "lpg",
-      "price": 2.37,
-      "prev": 2.62,
-      "live": true
+      "price": null,
+      "prev": null,
+      "live": false,
+      "label": "UAE supplier quote"
     },
     {
       "id": "syngas",
-      "price": 0.62,
-      "prev": 0.62,
-      "live": true
+      "price": null,
+      "prev": null,
+      "live": false,
+      "label": "UAE supplier quote"
+    },
+    {
+      "id": "lpg",
+      "price": null,
+      "prev": null,
+      "live": false,
+      "label": "UAE supplier quote"
     },
     {
       "id": "oxygen",
-      "price": 1.6,
-      "prev": 1.6,
-      "live": false
+      "price": null,
+      "prev": null,
+      "live": false,
+      "label": "UAE supplier quote"
     },
     {
       "id": "nitrogen",
-      "price": 1.2,
-      "prev": 1.2,
-      "live": false
+      "price": null,
+      "prev": null,
+      "live": false,
+      "label": "UAE supplier quote"
     }
   ]
 }
