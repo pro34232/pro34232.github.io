@@ -16,6 +16,14 @@ export type MarketPrice = {
   live: boolean;
   label?: string;
   sourceUrl?: string;
+  reference?: {
+    amount: number;
+    unit: string;
+    supplier: string;
+    sourceUrl: string;
+    checkedOn: string;
+    note: string;
+  };
 };
 
 export type MarketSnapshot = {

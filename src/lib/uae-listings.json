@@ -1,0 +1,38 @@
+[
+  {
+    "id": "kerosene",
+    "amount": 59,
+    "unit": "1-litre bottle · lamp-grade kerosene",
+    "supplier": "Al Sharhan Trading",
+    "sourceUrl": "https://www.alsharhanandsons.com/product-page/langlow-lamp-oil-1-ltr",
+    "checkedOn": "2026-11-05",
+    "note": "Packaged Langlow lamp oil, not an industrial bulk rate. VAT and delivery terms not stated."
+  },
+  {
+    "id": "lpg",
+    "amount": 54,
+    "unit": "25 lb cylinder refill",
+    "supplier": "ADNOC Distribution",
+    "sourceUrl": "https://www.adnocdistribution.ae/en/consumer-shop/gas",
+    "checkedOn": "2026-11-05",
+    "note": "50 lb refill: AED 108. A new 25 lb cylinder costs AED 290. Confirm delivery charges; not a bulk per-litre rate."
+  },
+  {
+    "id": "oxygen",
+    "amount": 20,
+    "unit": "website listing · described as “40 litre”",
+    "supplier": "Double Energy",
+    "sourceUrl": "https://2egases.com/product/oxygen-gas/",
+    "checkedOn": "2026-11-05",
+    "note": "Refill/cylinder inclusion, pressure, gas volume, purity, VAT and delivery not specified. Not a verified per-m³ rate."
+  },
+  {
+    "id": "nitrogen",
+    "amount": 80,
+    "unit": "website listing · described as “40 Litre”",
+    "supplier": "Double Energy",
+    "sourceUrl": "https://2egases.com/product/nitrogen-gas/",
+    "checkedOn": "2026-11-05",
+    "note": "Refill/cylinder inclusion, pressure, gas volume, purity, VAT and delivery not specified. Not a verified per-m³ rate."
+  }
+]
