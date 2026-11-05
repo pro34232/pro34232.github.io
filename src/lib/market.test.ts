@@ -1,20 +1,17 @@
 import { describe, expect, it } from 'vitest';
-import { applyPriceSettings } from './market';
-import type { MarketSnapshot } from './prices';
-const snapshot: MarketSnapshot = { source: 'yahoo', updated: 1, prices: [{ id: 'kerosene', price: 3.9, prev: 3.7, live: true }, { id: 'oxygen', price: 1.6, prev: 1.6, live: false }, { id: 'diesel', price: 5.28, prev: 5.55, live: true }] };
-describe('Saved prices', () => {
-  it('uses the configured margin instead of the copied default', () => {
-    expect(applyPriceSettings(snapshot, [{ product: 'kerosene', margin: 1.05, list_price: null }]).prices[0]?.price).toBe(4.2);
-  });
-  it('uses the fixed owner price when supplied', () => {
-    expect(applyPriceSettings(snapshot, [{ product: 'oxygen', margin: 0, list_price: 2.5 }]).prices[1]?.price).toBe(2.5);
-  });
-  it('uses November UAE diesel at AED 4.75 without adding an owner margin or fixed override', () => {
-    const diesel = applyPriceSettings(snapshot, [{ product: 'diesel', margin: 2, list_price: 6 }], Date.parse('2026-11-04')).prices[2];
-    expect(diesel?.price).toBe(4.75);
-    expect(diesel?.prev).toBe(4.80);
-  });
-  it('marks the November rate as last published once December begins', () => {
-    expect(applyPriceSettings(snapshot, [], Date.parse('2026-12-01')).prices[2]?.label).toContain('Last published UAE price');
-  });
+import { getUaePrices, applyPriceSettings, priceTotal, advisorCatalog } from './market';
+describe('UAE pricing', () => {
+ it('uses November diesel at AED 4.75 even when an old hosted response says 5.29', () => {
+ const snapshot = { source: 'yahoo' as const, updated: 1, prices: [{ id: 'diesel', price: 5.29, prev: 5.55, live: true }] };
+ expect(applyPriceSettings(snapshot, [{ product: 'diesel', margin: 2, list_price: 6 }]).prices[0]?.price).toBe(4.75);
+ });
+ for (const id of ['kerosene', 'lpg', 'syngas', 'oxygen', 'nitrogen']) it(`${id} has no invented UAE price or total`, () => {
+ const row = getUaePrices().prices.find(p => p.id === id);
+ expect(row?.price).toBeNull(); expect(priceTotal(row?.price ?? null, 1000)).toBeNull();
+ });
+ it('calculates AED 4750 for 1000 litres of diesel', () => { expect(priceTotal(4.75, 1000)).toBe(4750); });
+ it('marks expired rates as last published', () => { expect(getUaePrices(Date.parse('2026-12-01')).stale).toBe(true); });
+ it('gives the advisor quote-only pricing for all non-diesel products', () => {
+ expect(advisorCatalog().split('\n').filter(line => line.includes('Price on request'))).toHaveLength(5);
+ });
 });

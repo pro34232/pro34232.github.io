@@ -1,4 +1,5 @@
 import type { MarketSnapshot } from './prices';
+import { applyPriceSettings } from './market';
 export type BookingSettings = { days: number[]; slots: string[]; capacity: number; blocked_dates: string[] };
 const base = import.meta.env['VITE_ECOFUEL_BACKEND_URL'] || 'https://eco-fuel-circular-energy.lovable.app';
 async function call<T>(operation: string, data?: unknown): Promise<T> {
@@ -8,7 +9,7 @@ async function call<T>(operation: string, data?: unknown): Promise<T> {
   if (!response.ok) throw new Error('Eco Fuel service is unavailable');
   return response.json() as Promise<T>;
 }
-export const getLivePrices = () => call<MarketSnapshot>('prices');
+export const getLivePrices = async () => applyPriceSettings(await call<MarketSnapshot>('prices'), []);
 export const getBookingSettings = () => call<BookingSettings>('settings');
 export const getBookedSlots = (input: { data: { date: string } }) => call<string[]>('slots', input.data);
 export const submitRequest = (input: { data: unknown }) => call<{ ok: true; reference: string } | { ok: false; reason: string }>('booking', input.data);

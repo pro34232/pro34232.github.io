@@ -1,21 +1,21 @@
-import type { MarketSnapshot } from './prices';
+import { PRODUCTS, type MarketSnapshot } from './prices';
 import uaeDiesel from './uae-diesel.json';
-
 export type PriceSetting = { product: string; margin: number; list_price: number | null };
-export function applyPriceSettings(snapshot: MarketSnapshot, settings: PriceSetting[], now = Date.now()): MarketSnapshot {
-  const oldMargins: Record<string, number> = { diesel: 0.9, kerosene: 0.75, lpg: 0.45, syngas: 0.5 };
-  const round = (value: number) => Math.round(value * 100) / 100;
-  return { ...snapshot, prices: snapshot.prices.map(price => {
-    if (price.id === 'diesel') return {
-      ...price, price: uaeDiesel.price, prev: uaeDiesel.previousPrice, live: false,
-      label: `${now >= Date.parse(uaeDiesel.validUntil) ? 'Last published UAE price' : 'UAE retail price'} · ${uaeDiesel.month}`,
-      sourceUrl: uaeDiesel.sourceUrl,
-    };
-    const setting = settings.find(row => row.product === price.id);
-    if (!setting) return price;
-    if (setting.list_price !== null) return { ...price, price: setting.list_price, prev: setting.list_price, live: false };
-    const margin = oldMargins[price.id];
-    if (margin === undefined) return price;
-    return { ...price, price: round(Math.max(0, price.price - margin + setting.margin)), prev: round(Math.max(0, price.prev - margin + setting.margin)) };
-  }) };
+export function applyPriceSettings(_snapshot: MarketSnapshot, _settings: PriceSetting[], now = Date.now()): MarketSnapshot { return getUaePrices(now); }
+export function getUaePrices(now = Date.now()): MarketSnapshot {
+  const expired = now >= Date.parse(uaeDiesel.validUntil);
+  return { source: 'uae', updated: Date.parse(uaeDiesel.validFrom), stale: expired,
+    prices: PRODUCTS.map(product => product.id === 'diesel' ? {
+      id: product.id, price: uaeDiesel.price, prev: uaeDiesel.previousPrice, live: false,
+      label: `${expired ? 'Last published UAE price' : 'UAE retail price'} · ${uaeDiesel.month}`, sourceUrl: uaeDiesel.sourceUrl,
+    } : { id: product.id, price: null, prev: null, live: false, label: 'UAE supplier quote' }) };
+}
+export function priceTotal(price: number | null, quantity: number): number | null { return price === null ? null : price * quantity; }
+export function advisorCatalog(): string {
+  const snapshot = getUaePrices();
+  return PRODUCTS.map(product => {
+    const rate = snapshot.prices.find(row => row.id === product.id);
+    const pricing = rate?.price == null ? 'Price on request — UAE supplier quote; never estimate a price or total' : `AED ${rate.price.toFixed(2)} per ${product.unit}; ${rate.label}; UAE pump reference, not an Eco Fuel selling quote`;
+    return `- ${product.name}: ${pricing}; grade ${product.grade}; ${product.spec}`;
+  }).join('\n');
 }
