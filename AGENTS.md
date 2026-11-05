@@ -19,4 +19,5 @@
 - Keep request validation schemas in browser-safe modules separate from aliased server-function modules so GitHub Pages and hosted handlers resolve the same validation rules.
 - Public booking reads and RPC calls use a request-local publishable client; shared UAE pricing uses nullable quote-only amounts, normalized in hosted services and Pages so stale estimates cannot reappear.
 - Keep published UAE diesel rate, validity dates and source in shared browser-safe data used by pricing and the daily snapshot job; mark expired rates as last published rather than claiming a new current rate.
+- Keep third-party UAE web listings in shared browser-safe data separate from comparable bulk rates; pack sizes and incomplete cylinder terms must never become calculator prices.
 - Keep .env (publishable backend values only) tracked in git and no index.html at the project root: published builds come from git, so an ignored .env leaves the browser without backend config, and a root index.html makes hosting serve a raw Vite document; the Pages build uses src/github-pages.tsx as its entry instead.
