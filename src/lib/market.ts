@@ -10,8 +10,11 @@ export function getUaePrices(now = Date.now()): MarketSnapshot {
       id: product.id, price: uaeDiesel.price, prev: uaeDiesel.previousPrice, live: false,
       label: `${expired ? 'Last published UAE price' : 'UAE retail price'} · ${uaeDiesel.month}`, sourceUrl: uaeDiesel.sourceUrl,
     } : { id: product.id, price: null, prev: null, live: false, label: 'Bulk price on request',
-      reference: uaeListings.find(listing => listing.id === product.id),
-      sourceUrl: product.id === 'syngas' ? 'https://vertexprimepetro.com/product-273-synthetic-gas.html' : uaeListings.find(listing => listing.id === product.id)?.sourceUrl,
+      ...(() => {
+        const reference = uaeListings.find(listing => listing.id === product.id);
+        if (reference) return { reference, sourceUrl: reference.sourceUrl };
+        return product.id === 'syngas' ? { sourceUrl: 'https://vertexprimepetro.com/product-273-synthetic-gas.html' } : {};
+      })(),
     }) };
 }
 export function priceTotal(price: number | null, quantity: number): number | null { return price === null ? null : price * quantity; }
