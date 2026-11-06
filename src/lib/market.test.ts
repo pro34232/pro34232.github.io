@@ -14,4 +14,19 @@ describe('UAE pricing', () => {
  it('gives the advisor quote-only pricing for all non-diesel products', () => {
  expect(advisorCatalog().split('\n').filter(line => line.includes('Price on request'))).toHaveLength(5);
  });
+ it('keeps all third-party pack listings separate from bulk calculator rates', () => {
+ const snapshot = getUaePrices();
+ for (const id of ['kerosene', 'lpg', 'oxygen', 'nitrogen']) {
+ const row = snapshot.prices.find(price => price.id === id);
+ expect(row?.reference?.amount).toBeGreaterThan(0);
+ expect(row?.reference?.sourceUrl).toMatch(/^https:\/\//);
+ expect(row?.price).toBeNull();
+ expect(priceTotal(row?.price ?? null, 1000)).toBeNull();
+ }
+ });
+ it('leaves syngas quote-only without inventing a web listing', () => {
+ const row = getUaePrices().prices.find(price => price.id === 'syngas');
+ expect(row?.price).toBeNull();
+ expect(row?.reference).toBeUndefined();
+ });
 });
