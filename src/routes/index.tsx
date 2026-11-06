@@ -5,6 +5,7 @@ import { Advisor } from "@/components/Advisor";
 import { Comparison } from "@/components/Comparison";
 import { Enquiry } from "@/components/Enquiry";
 import { SiteHeader } from "@/components/SiteHeader";
+import { MarketPriceCard } from "@/components/MarketPriceCard";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { PRODUCTS } from "@/lib/prices";
@@ -55,7 +56,7 @@ function Home() {
     return () => clearInterval(timer);
   }, [refreshPrices]);
   const quote = (id: string, _base: number | null) => getUaePrices().prices.find(p => p.id === id)?.price ?? null;
-  const priceFor = (id: string) => live?.prices.find((p) => p.id === id);
+  const priceFor = (id: string) => (live ?? getUaePrices()).prices.find((p) => p.id === id);
   const selected = PRODUCTS.find((p) => p.id === pid) ?? PRODUCTS[0];
   const total = selected ? priceTotal(quote(selected.id, selected.base), litres) : null;
 
@@ -104,9 +105,9 @@ function Home() {
       </section>
 
       <section id="prices" className="mx-auto max-w-7xl px-5 py-20 lg:px-8">
-        <div className="flex flex-wrap items-end justify-between gap-5"><div><p className="text-xs uppercase tracking-[.2em] text-[#c4f542]">Market intelligence</p><h2 className="mt-3 font-display text-4xl font-semibold tracking-tight sm:text-5xl">Know your benchmark.</h2></div><div className="flex items-end gap-4"><p className="max-w-sm text-right text-sm leading-6 text-white/45">{live ? `${live.stale ? "Last published UAE rate" : "UAE retail reference"} · ${uaeDiesel.month} · AED` : priceError ? "Market snapshot unavailable" : "Loading market snapshot…"}<br />Diesel: published UAE retail rate; other products: UAE supplier quote on request.</p><Button type="button" variant="outline" onClick={() => void refreshPrices()} disabled={refreshing} className="border-white/15 bg-transparent text-white hover:bg-white/10 hover:text-white" aria-label="Refresh market prices"><RefreshCw className={refreshing ? "animate-spin" : ""} /> <span className="hidden sm:inline">{refreshing ? "Refreshing…" : "Refresh prices"}</span></Button></div></div>
+        <div className="flex flex-wrap items-end justify-between gap-5"><div><p className="text-xs uppercase tracking-[.2em] text-primary">Market intelligence</p><h2 className="mt-3 font-display text-4xl font-semibold sm:text-5xl">Know your benchmark.</h2></div><div className="flex min-w-0 items-end gap-4"><p className="max-w-sm text-right text-sm leading-6 text-muted-foreground">{live ? `${live.stale ? "Last published UAE rate" : "UAE retail reference"} · ${uaeDiesel.month} · AED` : priceError ? "Showing last saved UAE references" : "Loading market snapshot…"}<br />Published UAE web prices, with exact pack sizes and sources. Third-party listings are not Eco Fuel bulk quotes.</p><Button type="button" variant="outline" onClick={() => void refreshPrices()} disabled={refreshing} className="shrink-0 border-border bg-transparent text-foreground hover:bg-primary/10 hover:text-foreground" aria-label="Refresh market prices"><RefreshCw className={refreshing ? "animate-spin" : ""} /> <span className="hidden sm:inline">{refreshing ? "Refreshing…" : "Refresh prices"}</span></Button></div></div>
         <div className="mt-10 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-          {PRODUCTS.map((product, index) => <div key={product.id} className={`rounded-2xl border p-5 ${index === 0 ? "border-[#c4f542]/45 bg-[#c4f542]/10" : "border-white/10 bg-[#151d18]"}`}><div className="flex items-center justify-between text-xs text-white/40"><span>{product.name}</span><CircleGauge className="size-4" /></div><p className="mt-6 font-display text-2xl font-semibold">{product.id === "diesel" ? `AED ${uaeDiesel.price.toFixed(2)}` : "Price on request"}</p><p className="mt-1 text-xs text-white/40">per {product.unit}</p><p className="mt-5 text-xs text-[#c4f542]">{product.id === "diesel" ? <a href={priceFor(product.id)?.sourceUrl ?? uaeDiesel.sourceUrl} target="_blank" rel="noreferrer" className="underline underline-offset-4">{priceFor(product.id)?.label ?? `UAE retail price · ${uaeDiesel.month}`}</a> : "UAE supplier quote"}</p></div>)}
+          {PRODUCTS.map(product => <MarketPriceCard key={product.id} product={product} rate={priceFor(product.id)} />)}
         </div>
       </section>
 
