@@ -1,7 +1,7 @@
 import { CircleGauge, ArrowUpRight } from "lucide-react";
 import type { MarketPrice, Product } from "@/lib/prices";
 
-export function MarketPriceCard({ product, rate }: { product: Product; rate?: MarketPrice }) {
+export function MarketPriceCard({ product, rate }: { product: Product; rate: MarketPrice | undefined }) {
   const reference = rate?.reference;
   const amount = rate?.price ?? reference?.amount;
   return (
